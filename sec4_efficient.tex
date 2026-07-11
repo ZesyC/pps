@@ -191,12 +191,12 @@ Augmented Lagrangian kết hợp hai ý tưởng trên:
 Thuật toán lặp giữa cập nhật biến chính và cập nhật nhân tử:
 \begin{equation}
     \begin{cases}
-        \lambda_{k+1}=\lambda_k-\rho g(x_k),\\
-        x_{k+1}=\arg\min_x \mathcal{L}_{\rho}(x,\lambda_{k+1}).
+        x_{k+1}=\arg\min_x \mathcal{L}_{\rho}(x,\lambda_k),\\
+        \lambda_{k+1}=\lambda_k-\rho g(x_{k+1}).
     \end{cases}
     \label{eq_augmented_lagrangian_steps}
 \end{equation}
-Thành phần phạt bậc hai giúp bước tối ưu theo $x$ không đi quá xa khỏi tập ràng buộc, còn nhân tử Lagrange giúp không cần đưa $\rho$ tiến tới vô hạn.
+Thành phần phạt bậc hai giúp bước tối ưu theo $x$ không đi quá xa khỏi tập ràng buộc, còn nhân tử Lagrange giúp không cần đưa $\rho$ tiến tới vô hạn. Cập nhật nhân tử dùng điểm mới $x_{k+1}$, tức nghiệm vừa thu được từ bước tối ưu theo $x$.
 
 \subsubsection*{ADMM: công thức tổng quát}
 ADMM, tức \textit{Alternating Direction Method of Multipliers}, áp dụng ý tưởng augmented Lagrangian cho bài toán có hai nhóm biến:
