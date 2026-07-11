@@ -13,6 +13,3 @@
 *.synctex.gz
 *.thm
 *.toc
-
-# Generated PDFs
-*.pdf
