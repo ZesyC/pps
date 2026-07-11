@@ -1,0 +1,179 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{caption}
+\usepackage{float}
+\usepackage[utf8]{vietnam}
+\usepackage{lmodern}
+\usepackage{tocloft,calc}
+\usepackage[top=3.5cm, bottom=3.0cm, left=3.5cm, right=2.0cm]{geometry} % căn lề theo quy chuẩn KLTN
+\usepackage{amsmath,latexsym,amscd,amsfonts,mathrsfs,enumerate} \usepackage{ upgreek }
+\usepackage[thref,thmmarks,standard,amsmath,hyperref]{ntheorem}
+\usepackage[mathscr]{eucal}
+\usepackage[unicode,colorlinks=true, bookmarks=true, pdfstartview=FitH,]{hyperref} %pagebackref=true,
+\hypersetup{
+pdftitle={Báo cáo bài tập lớn - Các phương pháp tối ưu chuyên biệt trong học máy},
+pdfauthor={Nhóm 5},
+colorlinks = true,
+linkcolor = blue,
+citecolor = blue,
+}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{fancybox,cite}
+%\usepackage{refcheck}
+
+\newtheorem{tc}{Tính chất}[section]
+\newtheorem{md}{Mệnh đề}[section]
+\newtheorem{bd}{Bổ đề}[section]
+\newtheorem{hq}{Hệ quả}[section]
+\newtheorem{dl}{Định lý}[section]
+ 
+\allowdisplaybreaks
+%Môi trường định nghĩa
+\theoremheaderfont{\bfseries} % In ra chữ "định nghĩa": đậm, thẳng đứng.
+\theorembodyfont{} % Nội dung của định nghia được viết bằng chữ thẳng đứng.
+\theoremseparator {}         % Ngăn cách giữa định nghĩa và nội dung định nghĩa bởi dấu chấm.
+\newtheorem{dn}{Định nghĩa}[section] % Lệnh này để trong file kết quả in ra chữ nhận xét thay vì nếu ta để mặc định.
+
+%Môi trường Ví dụ
+\theoremheaderfont{\bfseries} % In ra chữ "Ví dụ": đậm, thẳng đứng.
+\theorembodyfont{\normalfont} % Nội dung của ví dụ được viết bằng chữ thẳng đứng.
+\theoremseparator {.}         % Ngăn cách giữa Ví dụ và nội dung ví dụ bởi dấu chấm.
+\newtheorem{vd}{Ví dụ}[section] % Lệnh này để trong file kết quả in ra chữ Ví dụ thay vì Example nếu ta để mặc định.
+
+%Môi trường Chú ý
+\theoremstyle{plain} %Không đánh sỗ chú ý
+\theoremheaderfont{\bfseries} % In ra chữ "chú ý": đậm, thẳng đứng.
+\theorembodyfont{\normalfont} % Nội dung của chú ý được viết bằng chữ thẳng đứng.
+\theoremseparator {}         % Ngăn cách giữa "chú ý" và nội dung chú ý bởi dấu chấm.
+\newtheorem{cy}{Chú ý} % Lệnh này để trong file kết quả in ra chữ "chú ý" thay vì remark nếu ta để mặc định.
+
+%Môi trường Bài tập
+\theoremheaderfont{\bfseries} % In ra chữ "chú ý": đậm, thẳng đứng.
+\theorembodyfont{\normalfont} % Nội dung của chú ý được viết bằng chữ thẳng đứng.
+\theoremseparator {}         % Ngăn cách giữa "chú ý" và nội dung chú ý bởi dấu chấm.\newtheorem{bt}{Bài tập} % Lệnh này để trong file kết quả in ra chữ "chú ý" thay vì  remark nếu ta để mặc định.
+
+%Môi trường nhân xét
+\theoremheaderfont{\bfseries} % In ra chữ "Nhân xét": đậm, thẳng đứng.
+\theorembodyfont{\normalfont} % Nội dung của nhạn xét được viết bằng chữ thẳng đứng.
+\theoremseparator {}         % Ngăn cách giữa nhận xét và nội dung nhận xét bởi dấu chấm.
+\newtheorem{nx}{Nhận xét}[section] % Lệnh này để trong file kết quả in ra chữ nhận xét thay vì nếu ta để mặc định.
+
+%Môi trường định lý
+\theoremstyle{plain} %Sử dụng phong cách plain để đánh số Định lý, chẳng hạn: Định lý 1, Định lý 2,...
+\theoremheaderfont{\normalfont\bfseries} % In ra chữ "Định lý": đậm, thẳng đứng.
+\theorembodyfont{\normalfont} % Nội dung của Định lý được viết bằng chữ nghiêng.
+\theoremseparator {.}         % Ngăn cách giữa Định lý và nội dung định lý bởi dấu chấm.
+\renewtheorem{theorem}{Định lý} % Lệnh này để trong file kết quả in ra chữ Định lý thay vì theorem nếu ta để mặc định.
+%Môi trường Mệnh đề
+\theoremstyle{plain} %Sử dụng phong cách plain để đánh số Mệnh đề, chẳng hạn: Mệnh đề 1, Mệnh đề 2,...
+\theoremheaderfont{\normalfont\bfseries} % In ra chữ "Mệnh đề": đậm, thẳng đứng.
+\theorembodyfont{\normalfont} % Nội dung của Mệnh đề được viết bằng chữ thẳng đứng.
+\theoremseparator {.}         % Ngăn cách giữa Mệnh đề và nội dung mệnh đề bởi dấu chấm.
+\renewtheorem{proposition}{Mệnh đề} % Lệnh này để trong file kết quả in ra chữ Mệnh đề thay vì proposition nếu ta để mặc định.
+%Môi trường Chứng minh
+\theoremstyle{nonumberplain}  % Kiểu định dạng dành cho chứng minh
+\theoremheaderfont{\normalfont\bfseries} % Tiêu đề "Chứng minh" in nghiêng
+\theorembodyfont{\normalfont}
+\theoremseparator{.} 
+\theoremsymbol{\ensuremath{\square}} % Dấu kết thúc chứng minh là ô vuông
+\newtheorem{cm}{Chứng minh}[section]
+
+\pagenumbering{roman}
+\setcounter{page}{1}
+\pagestyle{plain}
+\lhead{\it Phương pháp số cho học máy}
+\rhead{}
+\lfoot{\it Nhóm 5}
+\rfoot{\it }
+\pagestyle{fancy}
+\setlength{\headheight}{15pt}
+\renewcommand{\headrulewidth}{1.2pt}
+\renewcommand{\footrulewidth}{1.2pt} % Cái này là tiêu đề chạy
+
+\usepackage{amsmath}
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
+
+\begin{document}
+ \fontsize{14pt}{20pt}\selectfont % Lệnh thay đổi cỡ chữ thành cỡ 14, cỡ dòng 20 (theo quy chuẩn của Khóa Luận TN).
+ 
+ \thisfancypage{\setlength{\fboxsep}{0.2cm}\setlength{\fboxrule}{1pt}\doublebox}{}
+ \begin{titlepage}
+\begin{center}
+	\large
+	BỘ GIÁO DỤC VÀ ĐÀO TẠO\\
+	{\bf ĐẠI HỌC PHENIKAA}
+	{——————————o0o——————————}  
+\end{center}
+\vspace{0.6cm}
+\begin{center}
+    \includegraphics[scale=0.62]{image/phenikaa_image.png}
+\end{center}
+\vspace{0.4cm}
+\begin{center}
+    \bf\large {BÁO CÁO BÀI TẬP LỚN}
+\end{center}
+\begin{center}
+    \bf {HỌC PHẦN: PHƯƠNG PHÁP SỐ CHO HỌC MÁY}
+\end{center}
+\vspace{0.6cm}
+\begin{center}
+	\bf\Large CÁC PHƯƠNG PHÁP TỐI ƯU CHUYÊN BIỆT TRONG HỌC MÁY
+\end{center}
+\vspace{0.8cm}
+\begin{center}
+	\large {\bf Nhóm 5} 
+\end{center}
+\begin{center}
+    \begin{tabular}{ll}
+        Kiều Thị Thu Trang & MSSV: \textbf{24100093}\\
+        Trần Minh Sang & MSSV: \textbf{24100012}\\
+        Ngô Quang Thiện & MSSV: \textbf{}\\
+        Nguyễn Hưng Vũ & MSSV: \textbf{}
+    \end{tabular}
+\end{center}
+\begin{center}
+    Lớp: \textbf{K18-ICT3.24105.1}
+\end{center}
+\vspace{0.5cm}
+\begin{center}
+	GVHD: ThS. NCS. ĐẶNG THỊ NGOAN
+\end{center}
+\vfill
+\begin{center}
+	\large {\bf HÀ NỘI - 2026}
+\end{center}
+ \end{titlepage}
+\pagenumbering{arabic}
+\setcounter{page}{1}
+	%%%%%%%%%%%%%%%%%%%%
+	%%%%%%%%%%%%%%%%%%%%%%%%%
+	%%%%%%%
+
+\pagestyle{fancy}
+\hypersetup{linkcolor=black}
+% Chèn mục lục
+\tableofcontents
+\vspace{2cm}
+
+\renewcommand{\listfigurename}{Danh mục hình ảnh}
+\listoffigures
+\hypersetup{linkcolor=blue}
+\newpage
+
+\input{sec1_intro}
+\input{sec2_new_risk}
+\input{sec3_opt_strategy}
+\input{sec4_efficient}
+\input{sec5_total_risk_cov}
+\input{sec6_conclude}
+\input{sec7_conclude}
+
+\newpage
+
+\renewcommand{\refname}{Tài liệu tham khảo}
+\addcontentsline{toc}{section}{Tài liệu tham khảo}
+\bibliographystyle{plain}
+\bibliography{ref}
+
+\end{document}

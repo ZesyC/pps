@@ -1,0 +1,193 @@
+\section{Thực nghiệm minh họa}
+\label{SEC_thuc_nghiem}
+
+\subsection{Mục đích của phần thực nghiệm}
+\label{SUB_SEC_muc_dich_thuc_nghiem}
+Phần này trình bày các thực nghiệm minh họa nhỏ nhằm kiểm tra trực giác của các phương pháp đã học và quan sát sự khác biệt giữa chúng trong một số bài toán đơn giản.
+\medskip
+
+Trọng tâm của phần thực nghiệm không phải là xây dựng một hệ thống phần mềm lớn, mà là quan sát các hiện tượng sau:
+\begin{itemize}
+    \item Gauss-Newton hội tụ nhanh khi khởi tạo tốt, còn LM ổn định hơn khi khởi tạo chưa tốt.
+    \item IRLS cho hồi quy $L^1$ ít bị kéo lệch bởi ngoại lai hơn least-squares.
+    \item K-means giảm objective sau mỗi vòng lặp nhưng phụ thuộc vào khởi tạo.
+    \item ADMM tách một bài toán có ràng buộc thành các bước cập nhật đơn giản.
+\end{itemize}
+\medskip
+
+Các thí nghiệm được viết bằng Python, NumPy và Matplotlib, không dùng thư viện tối ưu chuyên dụng. Điều này phù hợp với mục tiêu của báo cáo: hiểu cấu trúc thuật toán trước khi dùng các bộ giải có sẵn.
+\medskip
+
+Phần thực nghiệm gồm các nhóm minh họa chính:
+\begin{itemize}
+    \item fit đường cong và biểu đồ hội tụ của Gauss-Newton/LM;
+    \item hồi quy $L^1$ bằng IRLS khi dữ liệu có ngoại lai;
+    \item quỹ đạo coordinate descent hai chiều;
+    \item kết quả phân cụm và objective của k-means;
+    \item hội tụ của ADMM cho nonnegative least-squares;
+    \item minh họa hình phạt bậc hai trong augmented Lagrangian.
+\end{itemize}
+
+\subsection{Fit đường cong bằng Gauss-Newton/LM}
+\label{SUB_SEC_exp_gn_lm}
+Xét dữ liệu sinh từ mô hình
+\begin{equation}
+    y_i=c_{\mathrm{true}}e^{a_{\mathrm{true}}t_i}+\varepsilon_i,
+    \label{eq_exp_data_generation}
+\end{equation}
+trong đó $\varepsilon_i$ là nhiễu nhỏ. Nhiệm vụ là ước lượng $a$ và $c$ từ dữ liệu. Residual được chọn là
+\begin{equation}
+    f_i(a,c)=y_i-ce^{at_i}.
+    \label{eq_exp_residual_experiment}
+\end{equation}
+Jacobian theo hai tham số $a,c$ là
+\begin{equation}
+    \frac{\partial f_i}{\partial a}
+    =
+    -ct_i e^{at_i},
+    \qquad
+    \frac{\partial f_i}{\partial c}
+    =
+    -e^{at_i}.
+    \label{eq_exp_jacobian}
+\end{equation}
+\medskip
+
+Với Gauss-Newton, tại mỗi vòng lặp ta giải
+\begin{equation}
+    J(a_k,c_k)^{T}J(a_k,c_k)\delta_k
+    =
+    -J(a_k,c_k)^{T}F(a_k,c_k),
+    \label{eq_exp_gn_system}
+\end{equation}
+rồi cập nhật
+\begin{equation}
+    \begin{bmatrix}
+        a_{k+1}\\
+        c_{k+1}
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        a_k\\
+        c_k
+    \end{bmatrix}
+    +\delta_k.
+    \label{eq_exp_gn_update}
+\end{equation}
+Với Levenberg-Marquardt, hệ tuyến tính được thay bằng
+\begin{equation}
+    \left(J^{T}J+\lambda_k I\right)\delta_k
+    =
+    -J^{T}F.
+    \label{eq_exp_lm_system}
+\end{equation}
+\medskip
+
+Khi triển khai, ta nên chạy hai trường hợp khởi tạo:
+\begin{itemize}
+    \item Khởi tạo gần nghiệm thật, ví dụ $a_0$ và $c_0$ chỉ lệch nhẹ so với tham số sinh dữ liệu.
+    \item Khởi tạo xa nghiệm thật, ví dụ $a_0$ sai dấu hoặc $c_0$ quá nhỏ.
+\end{itemize}
+Kỳ vọng quan sát là Gauss-Newton rất nhanh khi khởi tạo gần nghiệm, nhưng có thể không ổn định khi khởi tạo xa. Levenberg-Marquardt thường đi chậm hơn lúc đầu nhưng ít bị bước nhảy quá lớn.
+
+\subsection{IRLS cho hồi quy \texorpdfstring{$L^1$}{L1}}
+\label{SUB_SEC_exp_irls_l1}
+Xét bài toán hồi quy tuyến tính
+\begin{equation}
+    b=Ax+\varepsilon,
+    \label{eq_exp_l1_data}
+\end{equation}
+nhưng cố tình thêm một số ngoại lai vào vector $b$. Nếu dùng least-squares,
+\begin{equation}
+    \min_x \|Ax-b\|_2^2,
+    \label{eq_exp_l2_regression}
+\end{equation}
+các ngoại lai có thể kéo nghiệm lệch mạnh. Thay vào đó, ta dùng hồi quy $L^1$:
+\begin{equation}
+    \min_x \|Ax-b\|_1.
+    \label{eq_exp_l1_regression}
+\end{equation}
+IRLS cập nhật theo các bước:
+\begin{equation}
+    r^{(k)}=Ax_k-b,
+    \qquad
+    w_i^{(k)}=\frac{1}{\max(|r_i^{(k)}|,\delta)}.
+    \label{eq_exp_l1_weights}
+\end{equation}
+Sau đó giải
+\begin{equation}
+    A^{T}W^{(k)}A x_{k+1}=A^{T}W^{(k)}b.
+    \label{eq_exp_l1_weighted_system}
+\end{equation}
+\medskip
+
+Chỉ số nên ghi lại gồm:
+\begin{itemize}
+    \item giá trị $\|Ax_k-b\|_1$ qua từng vòng lặp;
+    \item sai số giữa nghiệm ước lượng và nghiệm thật nếu dữ liệu được sinh mô phỏng;
+    \item so sánh đường hồi quy least-squares và IRLS khi có ngoại lai.
+\end{itemize}
+Kỳ vọng là nghiệm $L^1$ ít bị lệch bởi các điểm ngoại lai hơn nghiệm least-squares.
+
+\subsection{K-means hoặc ADMM cho nonnegative least-squares}
+\label{SUB_SEC_exp_kmeans_admm}
+Có thể chọn một trong hai hướng thực nghiệm sau.
+\medskip
+
+\textbf{K-means.} Dữ liệu hai chiều gồm $K$ cụm được sinh mô phỏng, sau đó k-means được chạy với nhiều khởi tạo khác nhau. Hàm mục tiêu là
+\begin{equation}
+    E=\sum_{i=1}^{m}\|x_i-y_{c_i}\|_2^2.
+    \label{eq_exp_kmeans_energy}
+\end{equation}
+Sau mỗi vòng lặp, ta ghi lại $E$. Do mỗi bước gán cụm và cập nhật tâm đều tối ưu một phần của bài toán, $E$ không tăng qua các vòng lặp. Tuy nhiên, các khởi tạo khác nhau có thể dẫn tới nghiệm cuối khác nhau.
+\medskip
+
+\textbf{ADMM cho nonnegative least-squares.} Bài toán được xét là
+\begin{equation}
+    \min_x \|Ax-b\|_2^2
+    \quad
+    \text{subject to}
+    \quad
+    x\geq 0.
+    \label{eq_exp_nnls}
+\end{equation}
+Với tách biến $x=z$, các bước ADMM là
+\begin{equation}
+    x_{k+1}
+    =
+    (2A^{T}A+\rho I)^{-1}(2A^{T}b+\rho z_k-\lambda_k),
+    \label{eq_exp_nnls_x}
+\end{equation}
+\begin{equation}
+    z_{k+1}
+    =
+    \max\left(x_{k+1}+\frac{1}{\rho}\lambda_k,0\right),
+    \label{eq_exp_nnls_z}
+\end{equation}
+\begin{equation}
+    \lambda_{k+1}
+    =
+    \lambda_k+\rho(x_{k+1}-z_{k+1}).
+    \label{eq_exp_nnls_lambda}
+\end{equation}
+Chỉ số nên theo dõi là primal residual
+\begin{equation}
+    r_{\mathrm{pri}}^{(k)}=\|x_k-z_k\|_2
+    \label{eq_exp_primal_residual}
+\end{equation}
+và giá trị objective $\|Ax_k-b\|_2^2$.
+
+\subsection{So sánh tốc độ hội tụ}
+\label{SUB_SEC_exp_compare}
+Các thí nghiệm trên có thể được so sánh theo ba tiêu chí:
+\begin{itemize}
+    \item \textbf{Số vòng lặp}: thuật toán cần bao nhiêu vòng để đạt điều kiện dừng.
+    \item \textbf{Chi phí mỗi vòng}: mỗi vòng cần giải hệ tuyến tính, chiếu, cập nhật trọng số hay chỉ tính trung bình.
+    \item \textbf{Độ ổn định}: thuật toán có nhạy với khởi tạo, ngoại lai hoặc tham số như $\lambda$, $\rho$, $\delta$ hay không.
+\end{itemize}
+\medskip
+
+Nhận xét kỳ vọng được tóm tắt như sau. Gauss-Newton thường nhanh khi đã ở gần nghiệm nhưng kém ổn định hơn Levenberg-Marquardt khi khởi tạo xa. IRLS dễ triển khai và bền vững với ngoại lai, nhưng có thể chậm hoặc kém điều kiện nếu trọng số quá lớn. K-means có mỗi vòng lặp rẻ, nhưng nhạy với tâm ban đầu. ADMM có thể cần nhiều vòng lặp, nhưng mỗi vòng thường tách thành các bước đơn giản, phù hợp với bài toán có ràng buộc hoặc thành phần không trơn.
+\medskip
+
+Các kết quả thực nghiệm làm rõ những đánh đổi khó thấy nếu chỉ nhìn công thức: tốc độ hội tụ, độ ổn định, chi phí mỗi vòng lặp và độ nhạy với tham số.

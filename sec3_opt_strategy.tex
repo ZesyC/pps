@@ -1,0 +1,195 @@
+\section{Bình phương tối thiểu có trọng số lặp}
+\label{SEC_irls}
+
+\subsection{Công thức tổng quát và ý tưởng trọng số hóa}
+\label{SUB_SEC_irls_tong_quat}
+IRLS là viết tắt của \textit{Iteratively Reweighted Least-Squares}, tức bình phương tối thiểu có trọng số lặp. Ý tưởng của phương pháp là biến một bài toán không hoàn toàn thuộc dạng least-squares thành một chuỗi các bài toán least-squares có trọng số.
+\medskip
+
+Xét hàm mục tiêu có dạng
+\begin{equation}
+    E_{\mathrm{IRLS}}(x)
+    =
+    \sum_{i=1}^{m} f_i(x)\,g_i(x)^2.
+    \label{eq_irls_general}
+\end{equation}
+Trong biểu thức này, $f_i(x)$ đóng vai trò là trọng số của sai số bình phương $g_i(x)^2$. Nếu tại bước lặp thứ $k$ trọng số được cố định ở
+\begin{equation}
+    w_i^{(k)}=f_i(x_k),
+    \label{eq_irls_weight_fixed}
+\end{equation}
+thì bước tiếp theo được tính bằng bài toán
+\begin{equation}
+    x_{k+1}
+    =
+    \arg\min_x
+    \sum_{i=1}^{m} w_i^{(k)}\,g_i(x)^2.
+    \label{eq_irls_iteration}
+\end{equation}
+Sau khi tìm được $x_{k+1}$, trọng số được cập nhật theo nghiệm mới rồi quá trình lặp tiếp tục.
+\medskip
+
+Về mặt trực giác, IRLS cho phép mức ảnh hưởng của từng điểm dữ liệu thay đổi theo vòng lặp. Tùy mục tiêu ban đầu, những sai số lớn, sai số nhỏ hoặc thành phần gần bằng $0$ sẽ được tăng hoặc giảm trọng số. Cơ chế này rất hợp với robust regression, sparse regression và một số bài toán thống kê cổ điển.
+\medskip
+
+Nếu $g_i(x)$ là hàm tuyến tính, bài toán \eqref{eq_irls_iteration} là weighted least-squares tuyến tính. Nếu đặt
+\begin{equation}
+    g_i(x)=a_i^{T}x-b_i,
+    \label{eq_linear_residual_irls}
+\end{equation}
+với $a_i^{T}$ là hàng thứ $i$ của ma trận $A$, và $W^{(k)}=\operatorname{diag}(w_1^{(k)},\dots,w_m^{(k)})$, thì \eqref{eq_irls_iteration} trở thành
+\begin{equation}
+    x_{k+1}
+    =
+    \arg\min_x
+    (Ax-b)^{T}W^{(k)}(Ax-b).
+    \label{eq_weighted_ls_matrix}
+\end{equation}
+Điều kiện tối ưu cho bài toán này là
+\begin{equation}
+    A^{T}W^{(k)}A x_{k+1}=A^{T}W^{(k)}b.
+    \label{eq_weighted_normal_equation}
+\end{equation}
+
+\subsection{Ví dụ tối ưu chuẩn \texorpdfstring{$L^p$}{Lp}}
+\label{SUB_SEC_lp_optimization}
+Cho $A\in\mathbb{R}^{m\times n}$ và $b\in\mathbb{R}^{m}$. Bài toán least-squares tuyến tính cổ điển tối thiểu hóa $\|Ax-b\|_2^2$. Một tổng quát hóa tự nhiên là thay chuẩn $\ell_2$ bằng chuẩn $L^p$:
+\begin{equation}
+    E_p(x)=\|Ax-b\|_p^p
+    =
+    \sum_{i=1}^{m}|a_i^{T}x-b_i|^p.
+    \label{eq_lp_objective}
+\end{equation}
+Đặt $r_i(x)=a_i^{T}x-b_i$. Với $p>0$,
+\begin{equation}
+    |r_i(x)|^p
+    =
+    |r_i(x)|^{p-2}r_i(x)^2.
+    \label{eq_lp_as_weighted_square}
+\end{equation}
+Vì vậy, nếu xem $|r_i(x)|^{p-2}$ là trọng số, bài toán $L^p$ có dạng gần giống weighted least-squares.
+\medskip
+
+Tại bước lặp $k$, một phiên bản ổn định của trọng số là
+\begin{equation}
+    w_i^{(k)}
+    =
+    \left((r_i(x_k))^2+\varepsilon^2\right)^{\frac{p}{2}-1},
+    \label{eq_lp_weight_smooth}
+\end{equation}
+trong đó $\varepsilon>0$ là một số nhỏ để tránh chia cho $0$. Bước kế tiếp giải
+\begin{equation}
+    x_{k+1}
+    =
+    \arg\min_x
+    \sum_{i=1}^{m}w_i^{(k)}(a_i^{T}x-b_i)^2.
+    \label{eq_lp_irls_step}
+\end{equation}
+\medskip
+
+Khi $p=2$, trọng số bằng $1$ và IRLS trở thành least-squares thông thường. Khi $p=1$, công thức dẫn tới một phương pháp gần với tối ưu chuẩn $L^1$. Với $p<2$, các residual lớn thường bị giảm ảnh hưởng tương đối so với least-squares, do đó phương pháp có tính bền vững tốt hơn trước ngoại lai.
+
+\subsection{Ví dụ tối ưu \texorpdfstring{$L^1$}{L1} và tính thưa}
+\label{SUB_SEC_l1_irls}
+Trường hợp $p=1$ đặc biệt quan trọng:
+\begin{equation}
+    E_1(x)=\sum_{i=1}^{m}|a_i^{T}x-b_i|.
+    \label{eq_l1_objective}
+\end{equation}
+Về mặt hình thức,
+\begin{equation}
+    |r_i(x)|=\frac{1}{|r_i(x)|}r_i(x)^2.
+    \label{eq_l1_weight_form}
+\end{equation}
+Do đó, tại bước $k$, ta chọn trọng số
+\begin{equation}
+    w_i^{(k)}
+    =
+    \frac{1}{\max(|r_i(x_k)|,\delta)},
+    \label{eq_l1_weight_delta}
+\end{equation}
+với $\delta>0$ để tránh chia cho $0$. Bước cập nhật là
+\begin{equation}
+    x_{k+1}
+    =
+    \arg\min_x
+    \sum_{i=1}^{m} w_i^{(k)}(a_i^{T}x-b_i)^2.
+    \label{eq_l1_irls_step}
+\end{equation}
+So với least-squares, chuẩn $L^1$ ít nhạy hơn với ngoại lai vì sai số lớn chỉ tăng tuyến tính thay vì tăng bình phương.
+\medskip
+
+Trong học máy, tính thưa thường được khuyến khích bằng chuẩn $L^1$. Ví dụ, hồi quy Lasso có dạng
+\begin{equation}
+    \min_x
+    \frac{1}{2}\|Ax-b\|_2^2+\alpha\|x\|_1,
+    \label{eq_lasso_intro_irls}
+\end{equation}
+trong đó $\alpha>0$ điều khiển mức phạt. Thành phần $\|x\|_1=\sum_j |x_j|$ khiến nhiều hệ số $x_j$ có xu hướng bằng $0$, nhờ đó mô hình trở nên thưa và dễ diễn giải hơn \cite{Tibshirani1996}. IRLS có thể được dùng bằng cách xấp xỉ
+\begin{equation}
+    |x_j|\approx \frac{x_j^2}{\max(|x_j^{(k)}|,\delta)}.
+    \label{eq_lasso_irls_penalty}
+\end{equation}
+Khi đó, ở mỗi vòng lặp, bài toán Lasso được thay bằng một bài toán ridge regression có trọng số theo từng hệ số. Cách tiếp cận này không phải luôn là lựa chọn nhanh nhất cho Lasso, nhưng nó cho thấy rõ cách chuẩn $L^1$ có thể được xử lý thông qua một chuỗi bài toán bậc hai.
+
+\subsection{Thuật toán Weiszfeld cho trung vị hình học}
+\label{SUB_SEC_weiszfeld}
+Một ví dụ đẹp của IRLS là bài toán trung vị hình học. Cho các điểm $x_1,x_2,\dots,x_m\in\mathbb{R}^{n}$, bài toán cần tìm điểm $x$ sao cho tổng khoảng cách Euclid tới các điểm đã cho là nhỏ nhất:
+\begin{equation}
+    E(x)=\sum_{i=1}^{m}\|x-x_i\|_2.
+    \label{eq_geometric_median}
+\end{equation}
+Nếu dùng trung bình cộng, nghiệm sẽ nhạy với ngoại lai. Trung vị hình học bền vững hơn vì dùng tổng khoảng cách thay vì tổng bình phương khoảng cách.
+\medskip
+
+Tương tự trường hợp $L^1$,
+\begin{equation}
+    \|x-x_i\|_2
+    =
+    \frac{1}{\|x-x_i\|_2}\|x-x_i\|_2^2.
+    \label{eq_geometric_median_weighted}
+\end{equation}
+Tại bước lặp $k$, đặt
+\begin{equation}
+    w_i^{(k)}
+    =
+    \frac{1}{\max(\|x_k-x_i\|_2,\delta)}.
+    \label{eq_weiszfeld_weight}
+\end{equation}
+Bước IRLS trở thành
+\begin{equation}
+    x_{k+1}
+    =
+    \arg\min_x
+    \sum_{i=1}^{m}w_i^{(k)}\|x-x_i\|_2^2.
+    \label{eq_weiszfeld_weighted_ls}
+\end{equation}
+Bài toán \eqref{eq_weiszfeld_weighted_ls} có nghiệm đóng. Lấy đạo hàm theo $x$:
+\begin{equation}
+    \sum_{i=1}^{m}2w_i^{(k)}(x-x_i)=0.
+    \label{eq_weiszfeld_derivative}
+\end{equation}
+Suy ra
+\begin{equation}
+    x_{k+1}
+    =
+    \frac{\sum_{i=1}^{m}w_i^{(k)}x_i}
+         {\sum_{i=1}^{m}w_i^{(k)}}.
+    \label{eq_weiszfeld_update}
+\end{equation}
+Công thức này là dạng cơ bản của thuật toán Weiszfeld \cite{Weiszfeld1937}. Mỗi vòng lặp vì thế chỉ cần tính một trung bình có trọng số; các điểm gần nghiệm hiện tại hơn nhận trọng số lớn hơn.
+
+\subsection{Nhận xét về hội tụ và giới hạn của IRLS}
+\label{SUB_SEC_irls_nhan_xet}
+IRLS có ưu điểm là dễ xây dựng. Khi hàm mục tiêu có thể viết thành ``trọng số nhân với bình phương'', một chiến lược trực tiếp là cố định trọng số rồi giải weighted least-squares. Với residual tuyến tính, mỗi bước lặp có thể giải bằng các kỹ thuật tuyến tính quen thuộc như Cholesky, QR hoặc conjugate gradient.
+\medskip
+
+Tuy nhiên, IRLS không phải lúc nào cũng hội tụ tốt. Có ba vấn đề thường gặp:
+\begin{itemize}
+    \item Nếu residual hoặc hệ số gần bằng $0$, trọng số có thể rất lớn, làm hệ tuyến tính bị kém điều kiện.
+    \item Nếu chọn $\delta$ hoặc $\varepsilon$ quá lớn, bài toán được làm trơn quá mạnh và nghiệm thu được có thể lệch khỏi bài toán gốc.
+    \item Nếu chọn $\delta$ quá nhỏ, thuật toán có thể dao động hoặc gặp khó khăn số học.
+\end{itemize}
+\medskip
+
+Với một số bài toán sparse recovery, hội tụ của IRLS đã được chứng minh khi thuật toán được điều chỉnh phù hợp \cite{Daubechies2010IRLS}. Khi triển khai, vẫn cần theo dõi điều kiện dừng, chất lượng nghiệm và độ ổn định của hệ tuyến tính ở mỗi vòng lặp.

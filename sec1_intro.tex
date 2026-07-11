@@ -1,0 +1,58 @@
+\section{Giới thiệu chung}
+\label{SEC_gioi_thieu_chung}
+
+\subsection{Đặt vấn đề}
+\label{SUB_SEC_dat_van_de}
+Trong các bài toán học máy, tối ưu hóa thường xuất hiện dưới dạng tìm một bộ tham số sao cho hàm mất mát đạt giá trị nhỏ nhất. Một cách tiếp cận tự nhiên là sử dụng các phương pháp tổng quát như Newton, quasi-Newton hoặc BFGS. Các phương pháp này có ưu điểm là có thể áp dụng cho nhiều hàm mục tiêu khác nhau, miễn là ta tính được đạo hàm bậc một, và trong một số trường hợp cả đạo hàm bậc hai.
+\medskip
+
+Tuy nhiên, sự tổng quát này cũng đi kèm với một số hạn chế. Phương pháp Newton yêu cầu Hessian, tức ma trận đạo hàm bậc hai của hàm mục tiêu. Với mô hình có số biến lớn, việc lập, lưu trữ và giải hệ tuyến tính liên quan tới Hessian có thể rất tốn chi phí. BFGS và các biến thể quasi-Newton giảm bớt yêu cầu này bằng cách xấp xỉ Hessian từ lịch sử các bước lặp, nhưng ma trận xấp xỉ đó không chỉ phụ thuộc vào trạng thái hiện tại mà còn phụ thuộc vào toàn bộ quá trình lặp trước đó.
+\medskip
+
+Trong khi đó, nhiều bài toán trong học máy không phải là một hàm mục tiêu bất kỳ. Chúng thường có cấu trúc rất rõ ràng: tổng bình phương các sai số, tổng các hàm trị tuyệt đối, các biến có thể tách thành từng khối, hoặc ràng buộc có dạng tuyến tính. Khai thác được các cấu trúc này giúp bài toán trở nên gọn hơn: thay vì gọi một bộ giải tối ưu tổng quát, ta chọn một phương pháp phù hợp với dạng của hàm mục tiêu và ràng buộc.
+
+\subsection{Ý tưởng chính}
+\label{SUB_SEC_y_tuong_chinh}
+Ý tưởng xuyên suốt của báo cáo là: \textit{một bài toán khó có thể trở nên dễ hơn nếu chọn đúng cách nhìn}. Với bài toán bình phương tối thiểu phi tuyến, cách nhìn phù hợp là tách hàm mất mát thành các residual rồi tuyến tính hóa chúng. Với các mục tiêu kiểu $L^1$, trọng số thay đổi theo nghiệm hiện tại giúp đưa bài toán về gần dạng least-squares. Với các bài toán có nhiều nhóm biến, việc cố định một nhóm và tối ưu nhóm còn lại thường làm xuất hiện những bài toán con rất quen thuộc. Các chương sau sẽ đi từ ba kiểu cấu trúc này tới các thuật toán cụ thể.
+
+\subsection{Phân loại các phương pháp tối ưu chuyên biệt}
+\label{SUB_SEC_phan_loai}
+Dựa trên cấu trúc bài toán, các phương pháp trong báo cáo được chia thành ba nhóm chính.
+\medskip
+
+\textbf{Bình phương tối thiểu phi tuyến.} Các bài toán thuộc nhóm này có dạng
+\begin{equation}
+    E(x)=\frac{1}{2}\sum_{i=1}^{m} f_i(x)^2,
+    \label{eq_intro_nls}
+\end{equation}
+trong đó $f_i(x)$ là các hàm dư. Nếu các $f_i$ là tuyến tính, ta quay về bài toán least-squares cổ điển. Nếu các $f_i$ là phi tuyến, Gauss-Newton và Levenberg-Marquardt là hai thuật toán tiêu biểu.
+\medskip
+
+\textbf{Tái trọng số.} Khi hàm mục tiêu không phải tổng bình phương, ví dụ $\sum_i |r_i(x)|$ hoặc $\sum_i \|x-x_i\|_2$, nó vẫn có thể được viết dưới dạng gần giống bình phương tối thiểu:
+\begin{equation}
+    E(x)=\sum_{i=1}^{m} w_i(x)\,g_i(x)^2.
+    \label{eq_intro_weighted_ls}
+\end{equation}
+Nếu tại bước lặp hiện tại xem $w_i(x)$ là cố định, bài toán còn lại là weighted least-squares. Cách làm này là cơ sở của IRLS.
+\medskip
+
+\textbf{Tách biến.} Với bài toán có nhiều nhóm biến, hàm mục tiêu có thể được viết dưới dạng $f(x,y)$ hoặc $f(x,z)$, sau đó tối ưu từng nhóm biến một. Trong học máy, cách làm này xuất hiện trong PCA dưới dạng alternating least-squares, coordinate descent cho Lasso, và k-means clustering.
+\medskip
+
+ADMM thuộc cùng mạch tư duy tách biến, nhưng có thêm ràng buộc. Biến phụ và ràng buộc tuyến tính được đưa vào để biến một bước tối ưu khó thành các cập nhật nhỏ hơn.
+
+\subsection{Phạm vi và mục tiêu của báo cáo}
+\label{SUB_SEC_pham_vi_muc_tieu}
+Báo cáo này tập trung vào các nội dung về \textit{Nonlinear Least-Squares}, \textit{Iteratively Reweighted Least-Squares}, \textit{Coordinate Descent and Alternation} trong Chương 12 của sách \textit{Numerical Algorithms: Methods for Computer Vision, Machine Learning, and Graphics} \cite{Solomon2015NumericalAlgorithms}. Cụ thể, báo cáo trình bày:
+\begin{itemize}
+    \item bình phương tối thiểu phi tuyến, Gauss-Newton và LM;
+    \item bình phương tối thiểu có trọng số lặp, bao gồm ví dụ chuẩn $L^p$, chuẩn $L^1$ và thuật toán Weiszfeld;
+    \item coordinate descent, alternating optimization, augmented Lagrangian và ADMM;
+    \item các liên hệ với học máy như curve fitting, robust regression, Lasso, logistic regression, PCA, k-means và tối ưu phân tán.
+\end{itemize}
+\medskip
+
+Mục tiêu của báo cáo không chỉ là trình bày lại lý thuyết trong tài liệu. Quan trọng hơn, báo cáo muốn làm rõ cách các thuật toán này xuất hiện trong những mô hình học máy quen thuộc. Chẳng hạn, k-means là một thuật toán alternation điển hình, PCA có thể được viết dưới dạng alternating least-squares, còn Lasso thường được giải bằng coordinate descent hoặc ADMM.
+\medskip
+
+Hai câu hỏi sẽ được dùng xuyên suốt các chương tiếp theo: mỗi phương pháp đang tận dụng cấu trúc nào của bài toán, và cấu trúc đó xuất hiện ở đâu trong các thuật toán học máy quen thuộc?

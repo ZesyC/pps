@@ -1,0 +1,73 @@
+\begin{thebibliography}{10}
+
+\bibitem{Arthur2007KMeansPP}
+David Arthur and Sergei Vassilvitskii.
+\newblock k-means++: The advantages of careful seeding.
+\newblock In {\em Proceedings of the Eighteenth Annual ACM-SIAM Symposium on
+  Discrete Algorithms}, pages 1027--1035, 2007.
+
+\bibitem{Bishop2006}
+Christopher~M. Bishop.
+\newblock {\em Pattern Recognition and Machine Learning}.
+\newblock Springer, 2006.
+
+\bibitem{Boyd2011ADMM}
+Stephen Boyd, Neal Parikh, Eric Chu, Borja Peleato, and Jonathan Eckstein.
+\newblock Distributed optimization and statistical learning via the alternating
+  direction method of multipliers.
+\newblock {\em Foundations and Trends in Machine Learning}, 3(1):1--122, 2011.
+
+\bibitem{Candes2011RPCA}
+Emmanuel~J. Cand{\`e}s, Xiaodong Li, Yi~Ma, and John Wright.
+\newblock Robust principal component analysis?
+\newblock {\em Journal of the ACM}, 58(3):11:1--11:37, 2011.
+
+\bibitem{Daubechies2010IRLS}
+Ingrid Daubechies, Ronald DeVore, Massimo Fornasier, and C.~Sinan
+  G{\"u}nt{\"u}rk.
+\newblock Iteratively reweighted least squares minimization for sparse
+  recovery.
+\newblock {\em Communications on Pure and Applied Mathematics}, 63(1):1--38,
+  2010.
+
+\bibitem{Levenberg1944}
+Kenneth Levenberg.
+\newblock A method for the solution of certain non-linear problems in least
+  squares.
+\newblock {\em Quarterly of Applied Mathematics}, 2(2):164--168, 1944.
+
+\bibitem{Lloyd1982}
+Stuart~P. Lloyd.
+\newblock Least squares quantization in pcm.
+\newblock {\em IEEE Transactions on Information Theory}, 28(2):129--137, 1982.
+
+\bibitem{Marquardt1963}
+Donald~W. Marquardt.
+\newblock An algorithm for least-squares estimation of nonlinear parameters.
+\newblock {\em Journal of the Society for Industrial and Applied Mathematics},
+  11(2):431--441, 1963.
+
+\bibitem{NocedalWright2006}
+Jorge Nocedal and Stephen~J. Wright.
+\newblock {\em Numerical Optimization}.
+\newblock Springer, 2 edition, 2006.
+
+\bibitem{Solomon2015NumericalAlgorithms}
+Justin Solomon.
+\newblock {\em Numerical Algorithms: Methods for Computer Vision, Machine
+  Learning, and Graphics}.
+\newblock CRC Press, 2015.
+
+\bibitem{Tibshirani1996}
+Robert Tibshirani.
+\newblock Regression shrinkage and selection via the lasso.
+\newblock {\em Journal of the Royal Statistical Society: Series B},
+  58(1):267--288, 1996.
+
+\bibitem{Weiszfeld1937}
+Endre Weiszfeld.
+\newblock Sur le point pour lequel la somme des distances de n points
+  donn{\'e}s est minimum.
+\newblock {\em Tohoku Mathematical Journal}, 43:355--386, 1937.
+
+\end{thebibliography}

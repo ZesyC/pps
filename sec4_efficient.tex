@@ -1,0 +1,353 @@
+\section{Coordinate Descent và Alternation}
+\label{SEC_coordinate_alternation}
+
+\subsection{Ý tưởng luân phiên tối ưu}
+\label{SUB_SEC_alternation_idea}
+Giả sử ta cần tối thiểu hóa một hàm $f:\mathbb{R}^{n+m}\rightarrow\mathbb{R}$. Thay vì xem biến đầu vào là một vector lớn, ta tách nó thành hai khối $x\in\mathbb{R}^{n}$ và $y\in\mathbb{R}^{m}$, rồi viết hàm mục tiêu dưới dạng $f(x,y)$. Một chiến lược đơn giản là cố định $y$ để tối ưu $x$, sau đó cố định $x$ để tối ưu $y$, và lặp lại:
+\begin{equation}
+    \begin{cases}
+        x_{k+1}=\arg\min_x f(x,y_k),\\
+        y_{k+1}=\arg\min_y f(x_{k+1},y).
+    \end{cases}
+    \label{eq_alternation_two_blocks}
+\end{equation}
+Chiến lược này được gọi là \textbf{alternating optimization}.
+\medskip
+
+Nếu mỗi bài toán con được giải chính xác, giá trị hàm mục tiêu không tăng qua từng bước:
+\begin{equation}
+    f(x_{k+1},y_k)\leq f(x_k,y_k),
+    \qquad
+    f(x_{k+1},y_{k+1})\leq f(x_{k+1},y_k).
+    \label{eq_alternation_monotone}
+\end{equation}
+Suy ra
+\begin{equation}
+    f(x_{k+1},y_{k+1})\leq f(x_k,y_k).
+    \label{eq_alternation_energy_decrease}
+\end{equation}
+Tính giảm đơn điệu này là một ưu điểm lớn của alternation. Tuy nhiên, điều đó không đảm bảo thuật toán luôn đi tới nghiệm toàn cục. Với bài toán không lồi, alternation có thể hội tụ tới nghiệm cục bộ hoặc điểm dừng phụ thuộc mạnh vào khởi tạo.
+
+\subsection{Khi nào nên dùng alternation}
+\label{SUB_SEC_when_alternation}
+Alternation thường phù hợp khi bài toán gốc khó, nhưng sau khi cố định một nhóm biến thì bài toán con trở nên đơn giản. Có hai tình huống đặc biệt hay gặp:
+\begin{itemize}
+    \item Bài toán gốc phi tuyến theo toàn bộ biến, nhưng tuyến tính hoặc least-squares theo từng khối biến.
+    \item Một số biến là biến rời rạc hoặc biến ràng buộc phức tạp, nhưng khi cố định các biến còn lại thì có công thức cập nhật đóng.
+\end{itemize}
+\medskip
+
+Trong học máy, alternation xuất hiện rất tự nhiên. Ví dụ, trong k-means, nếu biết tâm cụm thì việc gán nhãn cụm rất dễ; nếu biết nhãn cụm thì việc cập nhật tâm cụm cũng rất dễ. Nhưng nếu tối ưu đồng thời cả tâm cụm và nhãn cụm thì bài toán trở nên khó hơn nhiều.
+
+\subsection{Một số ví dụ tiêu biểu}
+\label{SUB_SEC_examples_alternation}
+
+\subsubsection*{PCA tổng quát và Alternating Least-Squares}
+Cho ma trận dữ liệu $X\in\mathbb{R}^{n\times m}$, trong đó mỗi cột là một điểm dữ liệu. PCA cổ điển tìm một không gian con chiều thấp sao cho dữ liệu được xấp xỉ tốt nhất trong chuẩn Frobenius. Một cách viết là
+\begin{equation}
+    \min_{C,Y}\|X-CY\|_{\mathrm{Fro}}^2,
+    \label{eq_pca_als}
+\end{equation}
+trong đó $C\in\mathbb{R}^{n\times d}$ chứa các vector cơ sở và $Y\in\mathbb{R}^{d\times m}$ chứa hệ số biểu diễn của dữ liệu trong cơ sở đó.
+\medskip
+
+Nếu cố định $C$, bài toán tối ưu $Y$ là least-squares. Nếu cố định $Y$, bài toán tối ưu $C$ cũng là least-squares. Vì vậy, ta có thuật toán alternating least-squares:
+\begin{equation}
+    \begin{cases}
+        Y_{k+1}=\arg\min_Y \|X-C_kY\|_{\mathrm{Fro}}^2,\\
+        C_{k+1}=\arg\min_C \|X-CY_{k+1}\|_{\mathrm{Fro}}^2.
+    \end{cases}
+    \label{eq_pca_als_steps}
+\end{equation}
+Nếu thêm ràng buộc trực chuẩn cho các cột của $C$, ta quay về PCA cổ điển. Nếu thay chuẩn Frobenius bằng chuẩn khác, ví dụ chuẩn $L^1$ theo từng phần tử, ta thu được các biến thể robust PCA có khả năng giảm ảnh hưởng của nhiễu và ngoại lai \cite{Candes2011RPCA}.
+\medskip
+
+Tích $CY$ làm bài toán không lồi nếu xét đồng thời $C$ và $Y$. Khi một trong hai biến được cố định, phần còn lại giảm về một bài toán đơn giản hơn nhiều.
+
+\subsubsection*{Bài toán ARAP}
+ARAP là viết tắt của \textit{as-rigid-as-possible}, thường dùng trong xử lý hình học và biến dạng lưới. Một dạng năng lượng ARAP phẳng có thể viết như sau:
+\begin{equation}
+    \min_{\{R_v\},\{y_v\}}
+    \sum_{v\in V}\sum_{(v,w)\in E}
+    \|R_v(x_v-x_w)-(y_v-y_w)\|_2^2,
+    \label{eq_arap_energy}
+\end{equation}
+với ràng buộc
+\begin{equation}
+    R_v^{T}R_v=I_2,\qquad \forall v\in V.
+    \label{eq_arap_rotation_constraint}
+\end{equation}
+Ở đây $x_v$ là vị trí ban đầu, $y_v$ là vị trí sau biến dạng, còn $R_v$ là ma trận quay cục bộ tại đỉnh $v$.
+\medskip
+
+Nếu tối ưu đồng thời tất cả $R_v$ và $y_v$, bài toán rất khó vì có ràng buộc trực giao. Nhưng nếu tách biến, ta có hai bước:
+\begin{itemize}
+    \item Cố định các $R_v$, tối ưu các $y_v$. Khi đó bài toán là least-squares thưa, có thể giải bằng hệ tuyến tính xác định dương.
+    \item Cố định các $y_v$, tối ưu từng $R_v$. Các bài toán theo từng đỉnh tách rời nhau và trở thành bài toán Procrustes, có thể giải bằng SVD kích thước nhỏ.
+\end{itemize}
+\medskip
+
+Ví dụ này cho thấy sức mạnh của alternation: một bài toán phi tuyến lớn được thay bằng một bước giải hệ tuyến tính thưa và nhiều bài toán nhỏ có nghiệm đóng.
+
+\subsubsection*{Coordinate descent cho least-squares}
+Coordinate descent là trường hợp cực đoan của alternation, trong đó mỗi lần chỉ tối ưu một tọa độ. Xét bài toán
+\begin{equation}
+    \min_x \|Ax-b\|_2^2,
+    \label{eq_cd_ls}
+\end{equation}
+với $A=[a_1,a_2,\dots,a_n]$. Khai triển residual:
+\begin{equation}
+    Ax-b=\sum_{j=1}^{n}x_ja_j-b.
+    \label{eq_cd_expansion}
+\end{equation}
+Khi cố định tất cả các biến trừ $x_i$, điều kiện đạo hàm theo $x_i$ bằng $0$ là
+\begin{equation}
+    a_i^{T}(Ax-b)=0.
+    \label{eq_cd_derivative}
+\end{equation}
+Suy ra công thức cập nhật
+\begin{equation}
+    x_i
+    \leftarrow
+    \frac{a_i^{T}b-\sum_{j\neq i}x_j a_i^{T}a_j}
+         {\|a_i\|_2^2}.
+    \label{eq_cd_update_ls}
+\end{equation}
+Thuật toán lặp qua $i=1,2,\dots,n$ nhiều lần cho đến khi hội tụ. Mỗi bước cập nhật chỉ thay đổi một tọa độ, nên chi phí từng bước rất nhỏ. Đặc điểm này đặc biệt hữu ích trong các bài toán có số chiều lớn hoặc có cấu trúc thưa.
+
+\subsubsection*{Thuật toán k-means clustering}
+Cho các điểm dữ liệu $x_1,x_2,\dots,x_m\in\mathbb{R}^{n}$ và số cụm $K$. Thuật toán k-means tìm các tâm cụm $y_1,\dots,y_K$ sao cho tổng khoảng cách bình phương từ mỗi điểm tới tâm cụm gần nhất là nhỏ nhất:
+\begin{equation}
+    E(y_1,\dots,y_K)
+    =
+    \sum_{i=1}^{m}
+    \min_{c\in\{1,\dots,K\}}\|x_i-y_c\|_2^2.
+    \label{eq_kmeans_objective}
+\end{equation}
+Đặt $c_i$ là chỉ số cụm của điểm $x_i$. Khi đó, bài toán có thể viết lại là
+\begin{equation}
+    E(y_1,\dots,y_K;c_1,\dots,c_m)
+    =
+    \sum_{i=1}^{m}\|x_i-y_{c_i}\|_2^2.
+    \label{eq_kmeans_expanded}
+\end{equation}
+K-means chính là alternation giữa hai bước \cite{Lloyd1982}:
+\begin{itemize}
+    \item \textbf{Bước gán cụm:} cố định các tâm $y_j$, chọn
+    \begin{equation}
+        c_i=\arg\min_{c\in\{1,\dots,K\}}\|x_i-y_c\|_2^2.
+        \label{eq_kmeans_assignment}
+    \end{equation}
+    \item \textbf{Bước cập nhật tâm:} cố định các $c_i$, cập nhật
+    \begin{equation}
+        y_j=
+        \frac{\sum_{i:c_i=j}x_i}{|\{i:c_i=j\}|}.
+        \label{eq_kmeans_centroid}
+    \end{equation}
+\end{itemize}
+Mỗi bước không làm tăng hàm mục tiêu. Tuy nhiên, vì bài toán không lồi, kết quả phụ thuộc vào khởi tạo. Một cách xử lý phổ biến là chạy k-means nhiều lần hoặc dùng k-means++ để chọn tâm ban đầu tốt hơn \cite{Arthur2007KMeansPP}.
+
+\subsection{Augmented Lagrangian và ADMM}
+\label{SUB_SEC_admm}
+
+\subsubsection*{Từ hình phạt bậc hai đến nhân tử Lagrange}
+Xét bài toán có ràng buộc đẳng thức
+\begin{equation}
+    \begin{aligned}
+        &\min_x \quad f(x)\\
+        &\text{subject to}\quad g(x)=0.
+    \end{aligned}
+    \label{eq_eq_constrained_problem}
+\end{equation}
+Một cách xử lý là dùng hình phạt bậc hai:
+\begin{equation}
+    f_{\rho}(x)=f(x)+\frac{\rho}{2}\|g(x)\|_2^2.
+    \label{eq_quadratic_penalty}
+\end{equation}
+Khi $\rho$ lớn, nghiệm của bài toán phạt có xu hướng thỏa ràng buộc tốt hơn. Nhưng nếu $\rho$ quá lớn, bài toán trở nên kém điều kiện và khó tối ưu.
+\medskip
+
+Một cách khác là dùng Lagrangian:
+\begin{equation}
+    \mathcal{L}(x,\lambda)=f(x)+\lambda^{T}g(x).
+    \label{eq_lagrangian_basic}
+\end{equation}
+Cách này đưa ràng buộc vào thông qua nhân tử Lagrange, nhưng bài toán trở thành bài toán yên ngựa: tối thiểu theo $x$ và tối đa theo $\lambda$.
+\begin{cy}
+    Một số tài liệu viết Lagrangian dưới dạng $f(x)-\lambda^{T}g(x)$ và cập nhật dual với dấu trừ. Hai cách viết này tương đương nếu thay $\lambda$ bởi $-\lambda$. Trong báo cáo này, ta dùng quy ước dấu cộng để nhất quán với công thức ADMM ở các ví dụ phía sau.
+\end{cy}
+
+\subsubsection*{Phương pháp Augmented Lagrangian}
+Augmented Lagrangian kết hợp hai ý tưởng trên:
+\begin{equation}
+    \mathcal{L}_{\rho}(x,\lambda)
+    =
+    f(x)+\lambda^{T}g(x)+\frac{\rho}{2}\|g(x)\|_2^2.
+    \label{eq_augmented_lagrangian}
+\end{equation}
+Thuật toán lặp giữa cập nhật biến chính và cập nhật nhân tử:
+\begin{equation}
+    \begin{cases}
+        x_{k+1}=\arg\min_x \mathcal{L}_{\rho}(x,\lambda_k),\\
+        \lambda_{k+1}=\lambda_k+\rho g(x_{k+1}).
+    \end{cases}
+    \label{eq_augmented_lagrangian_steps}
+\end{equation}
+Thành phần phạt bậc hai giúp bước tối ưu theo $x$ không đi quá xa khỏi tập ràng buộc, còn nhân tử Lagrange giúp không cần đưa $\rho$ tiến tới vô hạn.
+
+\subsubsection*{ADMM: công thức tổng quát}
+ADMM, tức \textit{Alternating Direction Method of Multipliers}, áp dụng ý tưởng augmented Lagrangian cho bài toán có hai nhóm biến:
+\begin{equation}
+    \begin{aligned}
+        &\min_{x,z}\quad f(x)+h(z)\\
+        &\text{subject to}\quad Ax+Bz=c.
+    \end{aligned}
+    \label{eq_admm_problem}
+\end{equation}
+Augmented Lagrangian tương ứng là
+\begin{equation}
+    \mathcal{L}_{\rho}(x,z,\lambda)
+    =
+    f(x)+h(z)
+    +\lambda^{T}(Ax+Bz-c)
+    +\frac{\rho}{2}\|Ax+Bz-c\|_2^2.
+    \label{eq_admm_aug_lag}
+\end{equation}
+ADMM cập nhật ba bước:
+\begin{equation}
+    \begin{cases}
+        x_{k+1}
+        =
+        \arg\min_x \mathcal{L}_{\rho}(x,z_k,\lambda_k),\\
+        z_{k+1}
+        =
+        \arg\min_z \mathcal{L}_{\rho}(x_{k+1},z,\lambda_k),\\
+        \lambda_{k+1}
+        =
+        \lambda_k+\rho(Ax_{k+1}+Bz_{k+1}-c).
+    \end{cases}
+    \label{eq_admm_steps}
+\end{equation}
+Khác với augmented Lagrangian cổ điển, ADMM không tối ưu đồng thời $x$ và $z$. Thay vào đó, thuật toán tối ưu luân phiên từng biến. Việc tách này có thể làm tăng số vòng lặp, nhưng mỗi vòng lặp thường rẻ hơn nhiều và dễ song song hóa hơn \cite{Boyd2011ADMM}.
+
+\subsubsection*{Nhận xét về hội tụ và tham số $\rho$}
+Trong trường hợp $f$ và $h$ là các hàm lồi, ràng buộc là tuyến tính và augmented Lagrangian có điểm yên ngựa, ADMM có bảo đảm hội tụ tới nghiệm tối ưu toàn cục \cite{Boyd2011ADMM}. Với bài toán không lồi, ADMM vẫn thường được dùng trong thực nghiệm, nhưng lý thuyết hội tụ yếu hơn và kết quả có thể phụ thuộc vào cách tách biến cũng như khởi tạo.
+\medskip
+
+Một đặc điểm của ADMM là thuật toán thường giảm nhanh sai số ở giai đoạn đầu, tức nhanh chóng tạo ra nghiệm xấp xỉ tốt, nhưng có thể cần nhiều vòng lặp để đạt độ chính xác rất cao. Vì vậy, trong một số hệ thống, ADMM được dùng để tìm nghiệm ban đầu tốt rồi chuyển sang một phương pháp tinh chỉnh khác nếu cần độ chính xác cuối rất chặt.
+\medskip
+
+Tham số $\rho>0$ điều khiển mức phạt đối với vi phạm ràng buộc. Nếu $\rho$ quá nhỏ, biến primal có thể tiến chậm tới miền thỏa ràng buộc. Nếu $\rho$ quá lớn, bước cập nhật có thể trở nên kém điều kiện hoặc quá tập trung vào ràng buộc mà giảm ít hàm mục tiêu. Trong triển khai, người ta thường theo dõi primal residual và dual residual để điều chỉnh $\rho$: nếu primal residual lớn hơn nhiều thì tăng $\rho$, còn nếu dual residual lớn hơn nhiều thì giảm $\rho$.
+
+\subsubsection*{Ví dụ: Nonnegative least-squares bằng ADMM}
+Xét bài toán
+\begin{equation}
+    \begin{aligned}
+        &\min_x \quad \|Ax-b\|_2^2\\
+        &\text{subject to}\quad x\geq 0.
+    \end{aligned}
+    \label{eq_nnls_problem}
+\end{equation}
+Ràng buộc $x\geq 0$ khiến least-squares tuyến tính thông thường không còn áp dụng trực tiếp. Đưa vào biến phụ $z$, bài toán được viết tương đương thành:
+\begin{equation}
+    \begin{aligned}
+        &\min_{x,z}\quad \|Ax-b\|_2^2+h(z)\\
+        &\text{subject to}\quad x=z,
+    \end{aligned}
+    \label{eq_nnls_split}
+\end{equation}
+trong đó
+\begin{equation}
+    h(z)=
+    \begin{cases}
+        0, & z\geq 0,\\
+        +\infty, & \text{ngược lại}.
+    \end{cases}
+    \label{eq_indicator_nonnegative}
+\end{equation}
+Augmented Lagrangian là
+\begin{equation}
+    \mathcal{L}_{\rho}(x,z,\lambda)
+    =
+    \|Ax-b\|_2^2+h(z)
+    +\lambda^{T}(x-z)
+    +\frac{\rho}{2}\|x-z\|_2^2.
+    \label{eq_nnls_admm_lagrangian}
+\end{equation}
+Bước cập nhật $x$ thu được bằng cách cho gradient theo $x$ bằng $0$:
+\begin{equation}
+    (2A^{T}A+\rho I)x_{k+1}
+    =
+    2A^{T}b+\rho z_k-\lambda_k.
+    \label{eq_nnls_x_update_system}
+\end{equation}
+Do đó,
+\begin{equation}
+    x_{k+1}
+    =
+    (2A^{T}A+\rho I)^{-1}(2A^{T}b+\rho z_k-\lambda_k).
+    \label{eq_nnls_x_update}
+\end{equation}
+Bước cập nhật $z$ là phép chiếu lên miền không âm:
+\begin{equation}
+    z_{k+1}
+    =
+    \max\left(x_{k+1}+\frac{1}{\rho}\lambda_k,0\right),
+    \label{eq_nnls_z_update}
+\end{equation}
+trong đó phép $\max$ được hiểu theo từng phần tử. Cuối cùng,
+\begin{equation}
+    \lambda_{k+1}
+    =
+    \lambda_k+\rho(x_{k+1}-z_{k+1}).
+    \label{eq_nnls_lambda_update}
+\end{equation}
+NNLS lúc này được tách thành ba thao tác rõ ràng: giải hệ tuyến tính, chiếu lên miền không âm và cập nhật biến dual.
+
+\subsubsection*{Ví dụ: Geometric median bằng ADMM}
+Xét lại bài toán trung vị hình học:
+\begin{equation}
+    \min_x \sum_{i=1}^{N}\|x-x_i\|_2.
+    \label{eq_admm_geomedian_original}
+\end{equation}
+Đặt biến phụ $z_i=x_i-x$, hay tương đương $z_i+x=x_i$, bài toán trở thành
+\begin{equation}
+    \begin{aligned}
+        &\min_{x,\{z_i\}}\quad \sum_{i=1}^{N}\|z_i\|_2\\
+        &\text{subject to}\quad z_i+x=x_i,\qquad i=1,\dots,N.
+    \end{aligned}
+    \label{eq_admm_geomedian_split}
+\end{equation}
+Với nhân tử $\lambda_i$ cho từng ràng buộc, bước cập nhật $x$ có dạng đóng:
+\begin{equation}
+    x_{k+1}
+    =
+    \frac{1}{N}\sum_{i=1}^{N}
+    \left(x_i-z_i^{(k)}-\frac{1}{\rho}\lambda_i^{(k)}\right).
+    \label{eq_admm_geomedian_x_update}
+\end{equation}
+Bước cập nhật $z_i$ tách rời theo từng $i$. Đặt
+\begin{equation}
+    u_i^{(k)}
+    =
+    x_i-x_{k+1}-\frac{1}{\rho}\lambda_i^{(k)}.
+    \label{eq_admm_geomedian_u}
+\end{equation}
+Khi đó,
+\begin{equation}
+    z_i^{(k+1)}
+    =
+    \max\left(1-\frac{1}{\rho\|u_i^{(k)}\|_2},0\right)u_i^{(k)}.
+    \label{eq_admm_geomedian_z_update}
+\end{equation}
+Cập nhật này là phép co vector về phía $0$, tương tự soft-thresholding nhưng theo chuẩn Euclid. Cuối cùng,
+\begin{equation}
+    \lambda_i^{(k+1)}
+    =
+    \lambda_i^{(k)}+\rho(z_i^{(k+1)}+x_{k+1}-x_i).
+    \label{eq_admm_geomedian_lambda_update}
+\end{equation}
+Ví dụ này cho thấy lợi thế của ADMM: bài toán ban đầu không trơn tại các điểm $x=x_i$, nhưng sau khi tách biến, các bước cập nhật có dạng đơn giản và có thể song song hóa theo từng $i$.
+\medskip
+
+Tóm lại, ADMM không chỉ là một thuật toán cụ thể mà còn là một khuôn mẫu thiết kế thuật toán. Khi gặp một bài toán khó, ta tìm cách tách nó thành các khối sao cho mỗi bước cập nhật có thể giải nhanh, có nghiệm đóng hoặc có phép chiếu đơn giản.
