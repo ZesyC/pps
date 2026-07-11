@@ -1,6 +1,6 @@
-PWD c:\Users\PC\Desktop\pps
+PWD C:\Users\PC\Desktop\pps
 INPUT C:\Users\PC\AppData\Local\MiKTeX\miktex\data\le\pdftex\pdflatex.fmt
-INPUT c:\Users\PC\Desktop\pps\main.tex
+INPUT main.tex
 OUTPUT main.log
 INPUT D:\Program Files\MiKTeX\tex\latex\base\article.cls
 INPUT D:\Program Files\MiKTeX\tex\latex\base\article.cls
@@ -170,11 +170,6 @@ INPUT D:\Program Files\MiKTeX\tex\latex\graphics\mathcolor.ltx
 INPUT D:\Program Files\MiKTeX\tex\latex\graphics\mathcolor.ltx
 INPUT .\main.out
 INPUT .\main.out
-INPUT main.out
-INPUT main.out
-OUTPUT main.pdf
-INPUT .\main.out
-INPUT .\main.out
 OUTPUT main.out
 INPUT D:\Program Files\MiKTeX\tex\context\base\mkii\supp-pdf.mkii
 INPUT D:\Program Files\MiKTeX\tex\context\base\mkii\supp-pdf.mkii
@@ -265,18 +260,18 @@ INPUT .\sec1_intro.tex
 INPUT sec1_intro.tex
 INPUT D:\Program Files\MiKTeX\fonts\tfm\public\lm\t5-lmri12.tfm
 INPUT D:\Program Files\MiKTeX\fonts\tfm\public\lm\t5-lmri12.tfm
+INPUT D:\Program Files\MiKTeX\fonts\enc\dvips\lm\lm-mathex.enc
 INPUT D:\Program Files\MiKTeX\tex\latex\lm\ts1lmr.fd
 INPUT D:\Program Files\MiKTeX\tex\latex\lm\ts1lmr.fd
 INPUT D:\Program Files\MiKTeX\tex\latex\lm\ts1lmr.fd
 INPUT D:\Program Files\MiKTeX\fonts\tfm\public\lm\ts1-lmr12.tfm
-INPUT D:\Program Files\MiKTeX\fonts\enc\dvips\lm\lm-mathex.enc
-INPUT D:\Program Files\MiKTeX\fonts\enc\dvips\lm\lm-mathsy.enc
-INPUT D:\Program Files\MiKTeX\fonts\enc\dvips\lm\lm-ts1.enc
 INPUT .\sec2_new_risk.tex
 INPUT .\sec2_new_risk.tex
 INPUT .\sec2_new_risk.tex
 INPUT .\sec2_new_risk.tex
 INPUT sec2_new_risk.tex
+INPUT D:\Program Files\MiKTeX\fonts\enc\dvips\lm\lm-mathsy.enc
+INPUT D:\Program Files\MiKTeX\fonts\enc\dvips\lm\lm-ts1.enc
 INPUT D:\Program Files\MiKTeX\fonts\tfm\public\lm\t5-lmbx12.tfm
 INPUT D:\Program Files\MiKTeX\fonts\tfm\public\lm\t5-lmr10.tfm
 INPUT D:\Program Files\MiKTeX\fonts\tfm\public\lm\t5-lmr7.tfm
@@ -348,25 +343,3 @@ OUTPUT main.thm
 INPUT main.aux
 INPUT .\main.out
 INPUT .\main.out
-INPUT D:\Program Files\MiKTeX\fonts\type1\public\lm\lmbx12.pfb
-INPUT D:\Program Files\MiKTeX\fonts\type1\public\lm\lmbx12.pfb
-INPUT D:\Program Files\MiKTeX\fonts\type1\public\lm\lmex10.pfb
-INPUT D:\Program Files\MiKTeX\fonts\type1\public\lm\lmex10.pfb
-INPUT D:\Program Files\MiKTeX\fonts\type1\public\lm\lmmi10.pfb
-INPUT D:\Program Files\MiKTeX\fonts\type1\public\lm\lmmi10.pfb
-INPUT D:\Program Files\MiKTeX\fonts\type1\public\lm\lmmi12.pfb
-INPUT D:\Program Files\MiKTeX\fonts\type1\public\lm\lmmi12.pfb
-INPUT D:\Program Files\MiKTeX\fonts\type1\public\lm\lmmi7.pfb
-INPUT D:\Program Files\MiKTeX\fonts\type1\public\lm\lmmi7.pfb
-INPUT D:\Program Files\MiKTeX\fonts\type1\public\lm\lmr10.pfb
-INPUT D:\Program Files\MiKTeX\fonts\type1\public\lm\lmr10.pfb
-INPUT D:\Program Files\MiKTeX\fonts\type1\public\lm\lmr12.pfb
-INPUT D:\Program Files\MiKTeX\fonts\type1\public\lm\lmr12.pfb
-INPUT D:\Program Files\MiKTeX\fonts\type1\public\lm\lmr7.pfb
-INPUT D:\Program Files\MiKTeX\fonts\type1\public\lm\lmr7.pfb
-INPUT D:\Program Files\MiKTeX\fonts\type1\public\lm\lmri12.pfb
-INPUT D:\Program Files\MiKTeX\fonts\type1\public\lm\lmri12.pfb
-INPUT D:\Program Files\MiKTeX\fonts\type1\public\lm\lmsy10.pfb
-INPUT D:\Program Files\MiKTeX\fonts\type1\public\lm\lmsy10.pfb
-INPUT D:\Program Files\MiKTeX\fonts\type1\public\amsfonts\symbols\msbm10.pfb
-INPUT D:\Program Files\MiKTeX\fonts\type1\public\amsfonts\symbols\msbm10.pfb

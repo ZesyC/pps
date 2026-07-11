@@ -10,12 +10,12 @@ Xét hàm mục tiêu có dạng
 \begin{equation}
     E_{\mathrm{IRLS}}(x)
     =
-    \sum_{i=1}^{m} f_i(x)\,g_i(x)^2.
+    \sum_{i=1}^{m} h_i(x)\,g_i(x)^2.
     \label{eq_irls_general}
 \end{equation}
-Trong biểu thức này, $f_i(x)$ đóng vai trò là trọng số của sai số bình phương $g_i(x)^2$. Nếu tại bước lặp thứ $k$ trọng số được cố định ở
+Trong biểu thức này, $h_i(x)$ đóng vai trò là trọng số phụ thuộc vào $x$, còn $g_i(x)$ là thành phần sai số được bình phương. Cách ký hiệu này giúp tránh nhầm với $f_i(x)$ trong phần bình phương tối thiểu phi tuyến, nơi $f_i(x)$ được dùng cho residual. Nếu tại bước lặp thứ $k$ trọng số được cố định ở
 \begin{equation}
-    w_i^{(k)}=f_i(x_k),
+    w_i^{(k)}=h_i(x_k),
     \label{eq_irls_weight_fixed}
 \end{equation}
 thì bước tiếp theo được tính bằng bài toán

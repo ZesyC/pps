@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex main"] 1783744795.02058 "main.aux" "main.bbl" "main" 1783744799.86902 0
+["bibtex main"] 1783746255.40176 "main.aux" "main.bbl" "main" 1783746256.21613 0
   "./ref.bib" 1783605358 3475 8dfc4fdef70eb30732fd0810fd00838f ""
   "D:/Program Files/MiKTeX/bibtex/bst/bibtex/plain.bst" 1291864736 20613 bd3fbfa9f64872b81ac57a0dd2ed855f ""
-  "main.aux" 1783744799 22847 1463d4f60dc302c78dc32656b1e4e2a5 "pdflatex"
+  "main.aux" 1783746256 48 9cf1fe235cbf6c346b93ed4f6f5e10a3 "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1783744795.34113 "c:/Users/PC/Desktop/pps/main.tex" "main.pdf" "main" 1783744799.86946 0
+["pdflatex"] 1783746255.60643 "main.tex" "main.pdf" "main" 1783746256.21668 2
   "C:/Users/PC/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1783524239 88371 b965f57369ed322039596060d18f4416 ""
   "C:/Users/PC/AppData/Local/MiKTeX/fonts/tfm/public/rsfs/rsfs10.tfm" 1783524242 688 37338d6ab346c2f1466b29e195316aa4 ""
   "C:/Users/PC/AppData/Local/MiKTeX/fonts/tfm/public/rsfs/rsfs5.tfm" 1783524244 684 3a51bd4fd9600428d5264cf25f04bb9a ""
@@ -148,27 +148,23 @@
   "D:/Program Files/MiKTeX/tex/latex/tools/calc.sty" 1761901070 10374 2ffd4f27c7f90b8a300608069537743c ""
   "D:/Program Files/MiKTeX/tex/latex/tools/enumerate.sty" 1761901070 3468 f21ceb3448a22fec45299f924e7fc48b ""
   "D:/Program Files/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
-  "c:/Users/PC/Desktop/pps/main.tex" 1783744791 7447 12c2a527386218bcf728db44f56364a9 ""
+  "c:/Users/PC/Desktop/pps/main.tex" 1783746250 7511 e06504ec8d306374140fa9fd8d5a6aba ""
   "image/phenikaa_image.png" 1783523155 5880 ab2c7566d5653aec282e7683b93f9a82 ""
-  "main.aux" 1783744799 22847 1463d4f60dc302c78dc32656b1e4e2a5 "pdflatex"
-  "main.bbl" 1783744795 2592 c149c7fd0930ddcdc771be46a6967174 "bibtex main"
-  "main.lof" 1783744798 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
-  "main.out" 1783744799 8627 9bfcf9762e0456b79563dcea30e580d0 "pdflatex"
-  "main.tex" 1783744791 7447 12c2a527386218bcf728db44f56364a9 ""
-  "main.toc" 1783744799 3810 f9bc90253adc8b24d36281a113b6b69b "pdflatex"
+  "main.aux" 1783746256 48 9cf1fe235cbf6c346b93ed4f6f5e10a3 "pdflatex"
+  "main.bbl" 1783746255 2592 c149c7fd0930ddcdc771be46a6967174 "bibtex main"
+  "main.lof" 1783746128 0 d41d8cd98f00b204e9800998ecf8427e ""
+  "main.out" 1783746128 8627 9bfcf9762e0456b79563dcea30e580d0 ""
+  "main.tex" 1783746250 7511 e06504ec8d306374140fa9fd8d5a6aba ""
+  "main.toc" 1783746128 3810 f9bc90253adc8b24d36281a113b6b69b ""
   "sec1_intro.tex" 1783606765 6071 b5def259e3ba000b6ff7d3906809bb8d ""
   "sec2_new_risk.tex" 1783606801 12143 029e82501436f4c483e8e0dc8b64a9fc ""
-  "sec3_opt_strategy.tex" 1783744791 9051 70944224bf94cc9ca24f2a0bab024549 ""
-  "sec4_efficient.tex" 1783744791 17309 648e5a693fe351ac90761b15ea3e18b1 ""
+  "sec3_opt_strategy.tex" 1783746032 9254 3bf2286b25836346a2097a2e116e9633 ""
+  "sec4_efficient.tex" 1783745459 17561 552fcf9a3c0ecb9c1bbff92a355af099 ""
   "sec5_total_risk_cov.tex" 1783606802 8698 0eabfdc1a49ef3835d1be3ccc471d63c ""
   "sec6_conclude.tex" 1783606820 7978 2b927ecf0abd86b5b723d645a9bc8f73 ""
   "sec7_conclude.tex" 1783606770 4555 468887a3ff18e5d06ecb0a431846528a ""
   (generated)
   "main.aux"
-  "main.lof"
   "main.log"
-  "main.out"
   "main.pdf"
-  "main.thm"
-  "main.toc"
   (rewritten before read)

@@ -51,11 +51,11 @@ Cho ma trận dữ liệu $X\in\mathbb{R}^{n\times m}$, trong đó mỗi cột l
 trong đó $C\in\mathbb{R}^{n\times d}$ chứa các vector cơ sở và $Y\in\mathbb{R}^{d\times m}$ chứa hệ số biểu diễn của dữ liệu trong cơ sở đó.
 \medskip
 
-Nếu cố định $C$, bài toán tối ưu $Y$ là least-squares. Nếu cố định $Y$, bài toán tối ưu $C$ cũng là least-squares. Vì vậy, ta có thuật toán alternating least-squares:
+Nếu cố định $Y$, bài toán tối ưu $C$ là least-squares. Nếu cố định $C$, bài toán tối ưu $Y$ cũng là least-squares. Vì vậy, theo đúng thứ tự luân phiên trong tài liệu, ta có thuật toán alternating least-squares:
 \begin{equation}
     \begin{cases}
-        Y_{k+1}=\arg\min_Y \|X-C_kY\|_{\mathrm{Fro}}^2,\\
-        C_{k+1}=\arg\min_C \|X-CY_{k+1}\|_{\mathrm{Fro}}^2.
+        C_{k+1}=\arg\min_C \|X-CY_k\|_{\mathrm{Fro}}^2,\\
+        Y_{k+1}=\arg\min_Y \|X-C_{k+1}Y\|_{\mathrm{Fro}}^2.
     \end{cases}
     \label{eq_pca_als_steps}
 \end{equation}
@@ -67,17 +67,20 @@ Tích $CY$ làm bài toán không lồi nếu xét đồng thời $C$ và $Y$. K
 \subsubsection*{Bài toán ARAP}
 ARAP là viết tắt của \textit{as-rigid-as-possible}, thường dùng trong xử lý hình học và biến dạng lưới. Một dạng năng lượng ARAP phẳng có thể viết như sau:
 \begin{equation}
-    \min_{\{R_v\},\{y_v\}}
-    \sum_{v\in V}\sum_{(v,w)\in E}
-    \|R_v(x_v-x_w)-(y_v-y_w)\|_2^2,
+    \begin{aligned}
+        &\min_{\{R_v\},\{y_v\}}
+        \quad
+        \sum_{v\in V}\sum_{(v,w)\in E}
+        \|R_v(x_v-x_w)-(y_v-y_w)\|_2^2\\
+        &\text{subject to}
+        \quad
+        R_v^{T}R_v=I_2,\quad \forall v\in V,\\
+        &\hspace{3.1cm}
+        y_v\ \text{cố định},\quad \forall v\in V_0.
+    \end{aligned}
     \label{eq_arap_energy}
 \end{equation}
-với ràng buộc
-\begin{equation}
-    R_v^{T}R_v=I_2,\qquad \forall v\in V.
-    \label{eq_arap_rotation_constraint}
-\end{equation}
-Ở đây $x_v$ là vị trí ban đầu, $y_v$ là vị trí sau biến dạng, còn $R_v$ là ma trận quay cục bộ tại đỉnh $v$.
+Ở đây $x_v$ là vị trí ban đầu, $y_v$ là vị trí sau biến dạng, $R_v$ là ma trận quay cục bộ tại đỉnh $v$, còn $V_0$ là tập các đỉnh được giữ cố định.
 \medskip
 
 Nếu tối ưu đồng thời tất cả $R_v$ và $y_v$, bài toán rất khó vì có ràng buộc trực giao. Nhưng nếu tách biến, ta có hai bước:
@@ -169,12 +172,12 @@ Khi $\rho$ lớn, nghiệm của bài toán phạt có xu hướng thỏa ràng 
 
 Một cách khác là dùng Lagrangian:
 \begin{equation}
-    \mathcal{L}(x,\lambda)=f(x)+\lambda^{T}g(x).
+    \mathcal{L}(x,\lambda)=f(x)-\lambda^{T}g(x).
     \label{eq_lagrangian_basic}
 \end{equation}
 Cách này đưa ràng buộc vào thông qua nhân tử Lagrange, nhưng bài toán trở thành bài toán yên ngựa: tối thiểu theo $x$ và tối đa theo $\lambda$.
 \begin{cy}
-    Một số tài liệu viết Lagrangian dưới dạng $f(x)-\lambda^{T}g(x)$ và cập nhật dual với dấu trừ. Hai cách viết này tương đương nếu thay $\lambda$ bởi $-\lambda$. Trong báo cáo này, ta dùng quy ước dấu cộng để nhất quán với công thức ADMM ở các ví dụ phía sau.
+    Hai quy ước dấu $f(x)-\lambda^{T}g(x)$ và $f(x)+\lambda^{T}g(x)$ là tương đương nếu thay $\lambda$ bởi $-\lambda$. Để khớp với phần Augmented Lagrangian cổ điển trong tài liệu, đoạn này dùng dấu trừ. Riêng công thức ADMM phía sau được viết theo đúng quy ước dấu cộng xuất hiện trong tài liệu.
 \end{cy}
 
 \subsubsection*{Phương pháp Augmented Lagrangian}
@@ -182,14 +185,14 @@ Augmented Lagrangian kết hợp hai ý tưởng trên:
 \begin{equation}
     \mathcal{L}_{\rho}(x,\lambda)
     =
-    f(x)+\lambda^{T}g(x)+\frac{\rho}{2}\|g(x)\|_2^2.
+    f(x)+\frac{\rho}{2}\|g(x)\|_2^2-\lambda^{T}g(x).
     \label{eq_augmented_lagrangian}
 \end{equation}
 Thuật toán lặp giữa cập nhật biến chính và cập nhật nhân tử:
 \begin{equation}
     \begin{cases}
-        x_{k+1}=\arg\min_x \mathcal{L}_{\rho}(x,\lambda_k),\\
-        \lambda_{k+1}=\lambda_k+\rho g(x_{k+1}).
+        \lambda_{k+1}=\lambda_k-\rho g(x_k),\\
+        x_{k+1}=\arg\min_x \mathcal{L}_{\rho}(x,\lambda_{k+1}).
     \end{cases}
     \label{eq_augmented_lagrangian_steps}
 \end{equation}
