@@ -3,36 +3,36 @@
 
 \subsection{Tổng kết các phương pháp}
 \label{SUB_SEC_tong_ket_phuong_phap}
-Báo cáo đã trình bày các phương pháp tối ưu chuyên biệt trong phạm vi các nội dung về bình phương tối thiểu phi tuyến, IRLS, coordinate descent, alternation và ADMM trong Chương 12 của sách \cite{Solomon2015NumericalAlgorithms}. Các phương pháp này không xử lý bài toán như một hàm mục tiêu hoàn toàn tổng quát; thay vào đó, mỗi phương pháp khai thác một cấu trúc riêng của bài toán.
+Báo cáo đã trình bày các phương pháp tối ưu chuyên biệt trong phạm vi các nội dung về bình phương tối thiểu phi tuyến, IRLS, hạ theo tọa độ, tối ưu luân phiên và ADMM trong Chương 12 của sách \cite{Solomon2015NumericalAlgorithms}. Các phương pháp này không xử lý bài toán như một hàm mục tiêu hoàn toàn tổng quát; thay vào đó, mỗi phương pháp khai thác một cấu trúc riêng của bài toán.
 \medskip
 
-Với bình phương tối thiểu phi tuyến, Gauss-Newton tuyến tính hóa các residual và giải một bài toán least-squares tại mỗi vòng lặp. Levenberg-Marquardt bổ sung tham số damping để điều chỉnh giữa Gauss-Newton và gradient descent, nhờ đó ổn định hơn khi điểm lặp còn xa nghiệm.
+Với bình phương tối thiểu phi tuyến, Gauss-Newton tuyến tính hóa các hàm dư và giải một bài toán bình phương tối thiểu tại mỗi vòng lặp. Levenberg-Marquardt bổ sung tham số giảm chấn để điều chỉnh giữa Gauss-Newton và gradient descent, nhờ đó ổn định hơn khi điểm lặp còn xa nghiệm.
 \medskip
 
-Với IRLS, các hàm mục tiêu như chuẩn $L^1$, chuẩn $L^p$ hoặc trung vị hình học được viết lại dưới dạng bình phương tối thiểu có trọng số. Mỗi vòng lặp gồm hai việc: cố định trọng số để giải least-squares, rồi cập nhật trọng số theo nghiệm mới.
+Với IRLS, các hàm mục tiêu như chuẩn $L^1$, chuẩn $L^p$ hoặc trung vị hình học được viết lại dưới dạng bình phương tối thiểu có trọng số. Mỗi vòng lặp gồm hai việc: cố định trọng số để giải bình phương tối thiểu, rồi cập nhật trọng số theo nghiệm mới.
 \medskip
 
-Với coordinate descent và alternation, bài toán được chia thành các khối biến. Khi một khối được cố định, khối còn lại thường có bài toán con dễ hơn. Ý tưởng này dẫn tới nhiều thuật toán quen thuộc như alternating least-squares cho PCA, coordinate descent cho least-squares và k-means cho phân cụm.
+Với hạ theo tọa độ và tối ưu luân phiên, bài toán được chia thành các khối biến. Khi một khối được cố định, khối còn lại thường có bài toán con dễ hơn. Ý tưởng này dẫn tới nhiều thuật toán quen thuộc như bình phương tối thiểu luân phiên cho PCA, hạ theo tọa độ cho bình phương tối thiểu và k-means cho phân cụm.
 \medskip
 
-Cuối cùng, ADMM mở rộng tinh thần tách biến sang bài toán có ràng buộc. Bằng cách đưa vào biến phụ và augmented Lagrangian, ADMM biến một bài toán khó thành các bước cập nhật đơn giản hơn, ví dụ giải hệ tuyến tính, chiếu lên miền không âm hoặc soft-thresholding.
+Cuối cùng, ADMM mở rộng tinh thần tách biến sang bài toán có ràng buộc. Bằng cách đưa vào biến phụ và Lagrangian tăng cường, ADMM biến một bài toán khó thành các bước cập nhật đơn giản hơn, ví dụ giải hệ tuyến tính, chiếu lên miền không âm hoặc soft-thresholding.
 
 \subsection{Khi nào nên chọn phương pháp nào}
 \label{SUB_SEC_chon_phuong_phap}
-Nếu hàm mục tiêu có dạng tổng bình phương residual và residual khả vi, Gauss-Newton là lựa chọn tự nhiên. Nếu điểm khởi tạo tốt và residual tại nghiệm nhỏ, thuật toán có thể hội tụ rất nhanh. Khi điểm khởi tạo chưa đáng tin hoặc ma trận $J^{T}J$ gần suy biến, Levenberg-Marquardt thường an toàn hơn.
+Nếu hàm mục tiêu có dạng tổng bình phương sai số dư và sai số dư khả vi, Gauss-Newton là lựa chọn tự nhiên. Nếu điểm khởi tạo tốt và sai số dư tại nghiệm nhỏ, thuật toán có thể hội tụ rất nhanh. Khi điểm khởi tạo chưa đáng tin hoặc ma trận $J^{T}J$ gần suy biến, Levenberg-Marquardt thường an toàn hơn.
 \medskip
 
-Nếu bài toán liên quan tới chuẩn $L^1$, robust regression hoặc một hàm mất mát có thể viết dưới dạng trọng số nhân với bình phương, IRLS là một lựa chọn đáng thử. Tuy nhiên, cần cẩn thận với tham số làm trơn như $\delta$ hoặc $\varepsilon$, vì chúng ảnh hưởng trực tiếp tới độ ổn định số học.
+Nếu bài toán liên quan tới chuẩn $L^1$, hồi quy bền vững hoặc một hàm mất mát có thể viết dưới dạng trọng số nhân với bình phương, IRLS là một lựa chọn đáng thử. Tuy nhiên, cần cẩn thận với tham số làm trơn như $\delta$ hoặc $\varepsilon$, vì chúng ảnh hưởng trực tiếp tới độ ổn định số học.
 \medskip
 
-Nếu bài toán có nhiều nhóm biến và mỗi nhóm trở nên dễ tối ưu khi cố định các nhóm còn lại, alternation là một hướng tiếp cận hiệu quả. PCA, matrix factorization và k-means là các ví dụ điển hình. Nhược điểm chính là nghiệm có thể phụ thuộc vào khởi tạo do bài toán thường không lồi theo toàn bộ biến.
+Nếu bài toán có nhiều nhóm biến và mỗi nhóm trở nên dễ tối ưu khi cố định các nhóm còn lại, tối ưu luân phiên là một hướng tiếp cận hiệu quả. PCA, phân rã ma trận và k-means là các ví dụ điển hình. Nhược điểm chính là nghiệm có thể phụ thuộc vào khởi tạo do bài toán thường không lồi theo toàn bộ biến.
 \medskip
 
-Nếu bài toán có ràng buộc tuyến tính hoặc gồm một phần trơn và một phần không trơn, ADMM là một công cụ mạnh. ADMM đặc biệt phù hợp với Lasso, Elastic Net, nonnegative least-squares và các bài toán tối ưu phân tán. Dù vậy, việc chọn tham số $\rho$ và tiêu chí dừng vẫn cần được kiểm tra thực nghiệm.
+Nếu bài toán có ràng buộc tuyến tính hoặc gồm một phần trơn và một phần không trơn, ADMM là một công cụ mạnh. ADMM đặc biệt phù hợp với Lasso, Elastic Net, bình phương tối thiểu không âm và các bài toán tối ưu phân tán. Dù vậy, việc chọn tham số $\rho$ và tiêu chí dừng vẫn cần được kiểm tra thực nghiệm.
 
 \subsection{Nhận xét cuối cùng}
 \label{SUB_SEC_nhan_xet_cuoi}
-Các phương pháp đã trình bày vẫn còn những giới hạn rõ ràng. Gauss-Newton và LM phụ thuộc vào chất lượng tuyến tính hóa; IRLS cần xử lý cẩn thận các trọng số gần suy biến; alternation và k-means nhạy với khởi tạo; ADMM lại phụ thuộc khá nhiều vào cách tách biến và lựa chọn $\rho$.
+Các phương pháp đã trình bày vẫn còn những giới hạn rõ ràng. Gauss-Newton và LM phụ thuộc vào chất lượng tuyến tính hóa; IRLS cần xử lý cẩn thận các trọng số gần suy biến; tối ưu luân phiên và k-means nhạy với khởi tạo; ADMM lại phụ thuộc khá nhiều vào cách tách biến và lựa chọn $\rho$.
 \medskip
 
 Một hướng mở rộng tự nhiên của báo cáo là kiểm tra các phương pháp này trên cùng một bộ dữ liệu với nhiều mức nhiễu và nhiều điểm khởi tạo khác nhau. Khi đó, phần so sánh không chỉ dừng ở công thức cập nhật, mà còn cho thấy rõ hơn phương pháp nào ổn định, phương pháp nào nhanh, và phương pháp nào phù hợp khi bài toán có ràng buộc hoặc thành phần không trơn.

@@ -20,10 +20,10 @@ Một cách tự nhiên là chọn $a,c$ sao cho tổng bình phương sai số 
 \end{equation}
 \medskip
 
-Nếu mô hình là tuyến tính theo tham số, ví dụ $y=\beta_0+\beta_1t$, bài toán có thể đưa về least-squares tuyến tính. Tuy nhiên, trong \eqref{eq_exp_model}, tham số $a$ nằm trong hàm mũ, nên bài toán trở thành phi tuyến. Việc lập một ma trận thiết kế rồi giải phương trình chuẩn tắc một lần không còn đủ; cần dùng một phương pháp lặp.
+Nếu mô hình là tuyến tính theo tham số, ví dụ $y=\beta_0+\beta_1t$, bài toán có thể đưa về bình phương tối thiểu tuyến tính. Tuy nhiên, trong \eqref{eq_exp_model}, tham số $a$ nằm trong hàm mũ, nên bài toán trở thành phi tuyến. Việc lập một ma trận thiết kế rồi giải phương trình chuẩn tắc một lần không còn đủ; cần dùng một phương pháp lặp.
 \medskip
 
-Bài toán trên xuất hiện rất nhiều trong học máy và khoa học dữ liệu: fitting hàm tăng trưởng, hiệu chỉnh mô hình vật lý, ước lượng tham số trong mô hình phi tuyến, hoặc huấn luyện những mô hình có đầu ra được mô tả bởi một hàm khả vi theo tham số.
+Bài toán trên xuất hiện rất nhiều trong học máy và khoa học dữ liệu: khớp hàm tăng trưởng, hiệu chỉnh mô hình vật lý, ước lượng tham số trong mô hình phi tuyến, hoặc huấn luyện những mô hình có đầu ra được mô tả bởi một hàm khả vi theo tham số.
 
 \subsection{Công thức tổng quát}
 \label{SUB_SEC_cong_thuc_tong_quat_nls}
@@ -64,19 +64,19 @@ Hessian chính xác là
     =J(x)^{T}J(x)+\sum_{i=1}^{m} f_i(x)\nabla^2 f_i(x).
     \label{eq_hessian_nls}
 \end{equation}
-Công thức \eqref{eq_hessian_nls} giải thích vì sao bài toán NLS có cấu trúc đặc biệt. Nếu các residual $f_i(x)$ nhỏ gần nghiệm, thành phần $\sum_i f_i(x)\nabla^2f_i(x)$ cũng nhỏ. Khi đó, $J(x)^{T}J(x)$ là một xấp xỉ hợp lý cho Hessian.
+Công thức \eqref{eq_hessian_nls} giải thích vì sao bài toán NLS có cấu trúc đặc biệt. Nếu các hàm dư $f_i(x)$ nhỏ gần nghiệm, thành phần $\sum_i f_i(x)\nabla^2f_i(x)$ cũng nhỏ. Khi đó, $J(x)^{T}J(x)$ là một xấp xỉ hợp lý cho Hessian.
 
 \subsection{Thuật toán Gauss-Newton}
 \label{SUB_SEC_gauss_newton}
 
 \subsubsection*{Tuyến tính hóa các hàm dư}
-Giả sử điểm lặp hiện tại là $x_k$. Với mỗi residual $f_i$, xấp xỉ tuyến tính quanh $x_k$ cho ta:
+Giả sử điểm lặp hiện tại là $x_k$. Với mỗi hàm dư $f_i$, xấp xỉ tuyến tính quanh $x_k$ cho ta:
 \begin{equation}
     f_i(x_k+\delta)
     \approx f_i(x_k)+\nabla f_i(x_k)^{T}\delta.
     \label{eq_residual_linearization}
 \end{equation}
-Viết dưới dạng vector, ta có
+Viết dưới dạng vectơ, ta có
 \begin{equation}
     F(x_k+\delta)\approx F(x_k)+J(x_k)\delta.
     \label{eq_vector_linearization}
@@ -87,10 +87,10 @@ Thay xấp xỉ này vào \eqref{eq_enls_vector_form}, bài toán tại bước 
     \frac{1}{2}\|F(x_k)+J(x_k)\delta\|_2^2.
     \label{eq_gn_subproblem}
 \end{equation}
-Bài toán con này là least-squares tuyến tính theo $\delta$.
+Bài toán con này là bình phương tối thiểu tuyến tính theo $\delta$.
 \medskip
 
-Ở bước này chỉ có $F$ được tuyến tính hóa. Tuy nhiên, do chuẩn $\ell_2$ được bình phương, mô hình xấp xỉ vẫn là một hàm bậc hai theo $\delta$. Vì thế, thông tin độ cong xuất hiện qua $J^{T}J$ dù thuật toán chỉ cần đạo hàm bậc một của các $f_i$.
+Ở bước này chỉ có $F$ được tuyến tính hóa. Tuy nhiên, do chuẩn $\ell_2$ được bình phương, mô hình xấp xỉ vẫn là một hàm bậc hai theo $\delta$. Vì vậy thông tin độ cong xuất hiện qua $J^{T}J$ dù thuật toán chỉ cần đạo hàm bậc một của các $f_i$.
 
 \subsubsection*{Phương trình chuẩn tắc và công thức lặp}
 Điều kiện tối ưu của bài toán con \eqref{eq_gn_subproblem} là
@@ -122,28 +122,28 @@ So sánh với Newton, Gauss-Newton thay Hessian chính xác \eqref{eq_hessian_n
     H_{\mathrm{GN}}(x_k)=J(x_k)^{T}J(x_k).
     \label{eq_gn_hessian_approx}
 \end{equation}
-Nói cách khác, Gauss-Newton bỏ qua các đạo hàm bậc hai của từng residual $f_i$. So với Newton đầy đủ, bước lặp vì thế nhẹ hơn nhưng vẫn giữ lại phần độ cong quan trọng nhất của bài toán least-squares.
+Nói cách khác, Gauss-Newton bỏ qua các đạo hàm bậc hai của từng hàm dư $f_i$. So với Newton đầy đủ, bước lặp vì thế nhẹ hơn nhưng vẫn giữ lại phần độ cong quan trọng nhất của bài toán bình phương tối thiểu.
 
 \subsubsection*{Ưu điểm, nhược điểm và điều kiện hội tụ}
-Gauss-Newton chỉ yêu cầu Jacobian, không cần Hessian đầy đủ. Mỗi bước lặp lại có dạng least-squares tuyến tính, nên các kỹ thuật tuyến tính ổn định như QR, Cholesky hoặc conjugate gradient có thể được tận dụng trực tiếp. Khi điểm khởi tạo đủ gần nghiệm và residual tại nghiệm nhỏ, tốc độ hội tụ có thể rất nhanh, gần với Newton trong các trường hợp thuận lợi \cite{NocedalWright2006}.
+Gauss-Newton chỉ yêu cầu Jacobian, không cần Hessian đầy đủ. Mỗi bước lặp lại có dạng bình phương tối thiểu tuyến tính, nên các kỹ thuật tuyến tính ổn định như QR, Cholesky hoặc gradient liên hợp có thể được tận dụng trực tiếp. Khi điểm khởi tạo đủ gần nghiệm và hàm dư tại nghiệm nhỏ, tốc độ hội tụ có thể rất nhanh, gần với Newton trong các trường hợp thuận lợi \cite{NocedalWright2006}.
 \medskip
 
-Tuy nhiên, Gauss-Newton cũng có nhược điểm. Nếu điểm khởi tạo xa nghiệm, xấp xỉ tuyến tính \eqref{eq_vector_linearization} có thể kém chính xác. Nếu ma trận $J^{T}J$ gần suy biến, bước lặp có thể không ổn định. Ngoài ra, khi residual tối ưu không nhỏ, thành phần bị bỏ qua trong \eqref{eq_hessian_nls} có thể đáng kể, khiến xấp xỉ Gauss-Newton không còn tốt.
+Tuy nhiên, Gauss-Newton cũng có nhược điểm. Nếu điểm khởi tạo xa nghiệm, xấp xỉ tuyến tính \eqref{eq_vector_linearization} có thể kém chính xác. Nếu ma trận $J^{T}J$ gần suy biến, bước lặp có thể không ổn định. Ngoài ra, khi hàm dư tối ưu không nhỏ, thành phần bị bỏ qua trong \eqref{eq_hessian_nls} có thể đáng kể, khiến xấp xỉ Gauss-Newton không còn tốt.
 \medskip
 
-Với các bài toán curve fitting hoặc calibration có điểm khởi tạo tương đối hợp lý, Gauss-Newton thường là lựa chọn gọn và nhanh. Khi điểm khởi tạo chưa đủ tin cậy, Levenberg-Marquardt thường an toàn hơn.
+Với các bài toán khớp đường cong hoặc hiệu chỉnh tham số có điểm khởi tạo tương đối hợp lý, Gauss-Newton thường là lựa chọn gọn và nhanh. Khi điểm khởi tạo chưa đủ tin cậy, Levenberg-Marquardt thường an toàn hơn.
 
 \subsection{Thuật toán Levenberg-Marquardt}
 \label{SUB_SEC_levenberg_marquardt}
 
-\subsubsection*{Trust region}
-Gauss-Newton sử dụng xấp xỉ tuyến tính của $F$ để chọn bước $\delta$. Xấp xỉ này chỉ đáng tin trong một lân cận quanh $x_k$, nên độ dài bước lặp có thể được giới hạn bằng bài toán trust region:
+\subsubsection*{Vùng tin cậy}
+Gauss-Newton sử dụng xấp xỉ tuyến tính của $F$ để chọn bước $\delta$. Xấp xỉ này chỉ đáng tin trong một lân cận quanh $x_k$, nên độ dài bước lặp có thể được giới hạn bằng bài toán vùng tin cậy:
 \begin{equation}
     \begin{aligned}
         &\min_{\delta}
         \quad
         \frac{1}{2}\|F(x_k)+J(x_k)\delta\|_2^2\\
-        &\text{subject to}
+        &\text{với điều kiện}
         \quad
         \|\delta\|_2^2\leq \Delta_k.
     \end{aligned}
@@ -163,14 +163,14 @@ Bỏ qua hằng số không phụ thuộc vào $\delta$, bài toán \eqref{eq_lm
         &\min_{\delta}
         \quad
         \frac{1}{2}\delta^{T}H_k\delta+g_k^{T}\delta\\
-        &\text{subject to}
+        &\text{với điều kiện}
         \quad
         \|\delta\|_2^2\leq \Delta_k.
     \end{aligned}
     \label{eq_lm_quadratic_trust_region}
 \end{equation}
 
-\subsubsection*{Điều kiện KKT và tham số damping}
+\subsubsection*{Điều kiện KKT và tham số giảm chấn}
 Áp dụng điều kiện KKT cho \eqref{eq_lm_quadratic_trust_region}, ta thu được điều kiện dừng
 \begin{equation}
     H_k\delta_k+g_k+\lambda_k\delta_k=0,
@@ -192,7 +192,7 @@ và
     x_{k+1}=x_k+\delta_k.
     \label{eq_lm_update}
 \end{equation}
-Tham số $\lambda_k$ được gọi là tham số damping. Khi $\lambda_k>0$, ma trận $J^{T}J+\lambda_k I$ có xu hướng điều kiện tốt hơn $J^{T}J$, đặc biệt khi $J^{T}J$ gần suy biến.
+Tham số $\lambda_k$ được gọi là tham số giảm chấn. Khi $\lambda_k>0$, ma trận $J^{T}J+\lambda_k I$ có xu hướng điều kiện tốt hơn $J^{T}J$, đặc biệt khi $J^{T}J$ gần suy biến.
 
 \subsubsection*{Mối quan hệ với Gauss-Newton và gradient descent}
 Levenberg-Marquardt nằm giữa Gauss-Newton và gradient descent \cite{Levenberg1944,Marquardt1963}. Nếu $\lambda_k$ rất nhỏ, hệ \eqref{eq_lm_system_full} gần với hệ Gauss-Newton:

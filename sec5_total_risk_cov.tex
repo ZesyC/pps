@@ -3,7 +3,7 @@
 
 \subsection{Gauss-Newton và Levenberg-Marquardt trong hồi quy phi tuyến}
 \label{SUB_SEC_ml_gn_lm}
-Trong học máy, bài toán fitting mô hình thường có dạng tối thiểu hóa sai số giữa dự đoán và nhãn thật. Nếu mô hình dự đoán là $\hat{y}_i=f(t_i;\theta)$, với $\theta$ là vector tham số, thì residual là
+Trong học máy, bài toán khớp mô hình thường có dạng tối thiểu hóa sai số giữa dự đoán và nhãn thật. Nếu mô hình dự đoán là $\hat{y}_i=f(t_i;\theta)$, với $\theta$ là vectơ tham số, thì sai số dư là
 \begin{equation}
     r_i(\theta)=y_i-f(t_i;\theta).
     \label{eq_ml_residual}
@@ -16,14 +16,14 @@ Hàm mất mát bình phương là
 Hàm này có đúng dạng $E_{\mathrm{NLS}}$ trong Chương \ref{SEC_binh_phuong_toi_thieu_phi_tuyen}.
 \medskip
 
-Với các mô hình hồi quy phi tuyến như mô hình mũ, mô hình logistic dạng đường cong, mô hình động lực học nhỏ hoặc bài toán calibration tham số, Gauss-Newton và Levenberg-Marquardt thường là lựa chọn tự nhiên. Gauss-Newton hiệu quả khi điểm khởi tạo đủ gần nghiệm. Levenberg-Marquardt ổn định hơn vì có tham số damping, nhờ đó có thể xử lý tốt hơn giai đoạn đầu khi nghiệm còn xa.
+Với các mô hình hồi quy phi tuyến như mô hình mũ, mô hình logistic dạng đường cong, mô hình động lực học nhỏ hoặc bài toán hiệu chỉnh tham số, Gauss-Newton và Levenberg-Marquardt thường là lựa chọn tự nhiên. Gauss-Newton hiệu quả khi điểm khởi tạo đủ gần nghiệm. Levenberg-Marquardt ổn định hơn vì có tham số giảm chấn, nhờ đó có thể xử lý tốt hơn giai đoạn đầu khi nghiệm còn xa.
 \medskip
 
-Trong mạng nơ-ron hiện đại, số tham số thường rất lớn nên việc giải hệ tuyến tính kiểu Gauss-Newton đầy đủ không phải lúc nào cũng thực tế. Tuy nhiên, ý tưởng dùng $J^{T}J$ làm xấp xỉ độ cong vẫn xuất hiện trong các phương pháp bậc hai xấp xỉ, natural gradient, hoặc các kỹ thuật Hessian-free cho bài toán least-squares lớn. Với loss dạng tổng bình phương residual, cấu trúc Jacobian trở thành thông tin trung tâm của bài toán.
+Trong mạng nơ-ron hiện đại, số tham số thường rất lớn nên việc giải hệ tuyến tính kiểu Gauss-Newton đầy đủ không phải lúc nào cũng thực tế. Tuy nhiên, ý tưởng dùng $J^{T}J$ làm xấp xỉ độ cong vẫn xuất hiện trong các phương pháp bậc hai xấp xỉ, gradient tự nhiên, hoặc các kỹ thuật Hessian-free cho bài toán bình phương tối thiểu lớn. Với hàm mất mát dạng tổng bình phương sai số dư, cấu trúc Jacobian trở thành thông tin trung tâm của bài toán.
 
-\subsection{IRLS trong robust regression, Lasso và logistic regression}
+\subsection{IRLS trong hồi quy bền vững, Lasso và hồi quy logistic}
 \label{SUB_SEC_ml_irls}
-Least-squares thông thường nhạy với ngoại lai vì sai số lớn bị bình phương. Trong robust regression, ta thường thay hàm mất mát bình phương bằng các hàm tăng chậm hơn, ví dụ chuẩn $L^1$ hoặc Huber loss. IRLS là một cách tiếp cận tự nhiên cho nhóm bài toán này: điểm nào có residual lớn có thể được gán trọng số nhỏ hơn ở vòng lặp tiếp theo.
+Bình phương tối thiểu thông thường nhạy với ngoại lai vì sai số lớn bị bình phương. Trong hồi quy bền vững, ta thường thay hàm mất mát bình phương bằng các hàm tăng chậm hơn, ví dụ chuẩn $L^1$ hoặc hàm mất mát Huber. IRLS là một cách tiếp cận tự nhiên cho nhóm bài toán này: điểm nào có sai số dư lớn có thể được gán trọng số nhỏ hơn ở vòng lặp tiếp theo.
 \medskip
 
 Với hồi quy $L^1$,
@@ -36,7 +36,7 @@ IRLS cập nhật trọng số
     w_i^{(k)}=\frac{1}{\max(|a_i^{T}x_k-b_i|,\delta)}
     \label{eq_ml_l1_weight}
 \end{equation}
-rồi giải weighted least-squares. Khi residual lớn, trọng số nhỏ đi; do đó ngoại lai không chi phối nghiệm mạnh như trong least-squares.
+rồi giải bình phương tối thiểu có trọng số. Khi sai số dư lớn, trọng số nhỏ đi; do đó ngoại lai không chi phối nghiệm mạnh như trong bình phương tối thiểu.
 \medskip
 
 Trong Lasso,
@@ -45,10 +45,10 @@ Trong Lasso,
     \frac{1}{2}\|Ax-b\|_2^2+\alpha\|x\|_1,
     \label{eq_ml_lasso}
 \end{equation}
-chuẩn $L^1$ trên tham số giúp mô hình có nghiệm thưa \cite{Tibshirani1996}. IRLS có thể xấp xỉ thành phần $\|x\|_1$ bằng một phạt bậc hai có trọng số thay đổi theo từng vòng lặp. Dù vậy, Lasso thường được giải bằng coordinate descent hoặc ADMM vì hai phương pháp này khai thác tốt phép soft-thresholding.
+chuẩn $L^1$ trên tham số giúp mô hình có nghiệm thưa \cite{Tibshirani1996}. IRLS có thể xấp xỉ thành phần $\|x\|_1$ bằng một phạt bậc hai có trọng số thay đổi theo từng vòng lặp. Dù vậy, Lasso thường được giải bằng hạ theo tọa độ hoặc ADMM vì hai phương pháp này khai thác tốt phép soft-thresholding.
 \medskip
 
-Logistic regression cũng có một thuật toán IRLS cổ điển. Với dữ liệu nhị phân $y_i\in\{0,1\}$ và
+Hồi quy logistic cũng có một thuật toán IRLS cổ điển. Với dữ liệu nhị phân $y_i\in\{0,1\}$ và
 \begin{equation}
     p_i=\frac{1}{1+\exp(-a_i^{T}x)},
     \label{eq_logistic_probability}
@@ -61,34 +61,34 @@ negative log-likelihood là
     \left[y_i\log p_i+(1-y_i)\log(1-p_i)\right].
     \label{eq_logistic_loss}
 \end{equation}
-Newton cho logistic regression dẫn tới bài toán least-squares có trọng số với
+Newton cho hồi quy logistic dẫn tới bài toán bình phương tối thiểu có trọng số với
 \begin{equation}
     W_{ii}=p_i(1-p_i).
     \label{eq_logistic_weight}
 \end{equation}
-Vì vậy, thuật toán này thường được gọi là IRLS cho generalized linear models \cite{Bishop2006}. Ở đây, trọng số không đến từ chuẩn $L^1$, mà đến từ Hessian của log-likelihood.
+Vì vậy, thuật toán này thường được gọi là IRLS cho các mô hình tuyến tính tổng quát \cite{Bishop2006}. Ở đây, trọng số không đến từ chuẩn $L^1$, mà đến từ Hessian của log-hợp lý.
 
-\subsection{PCA và k-means như các bài toán alternation}
+\subsection{PCA và k-means như các bài toán tối ưu luân phiên}
 \label{SUB_SEC_ml_pca_kmeans}
-PCA và k-means là hai thuật toán học máy rất quen thuộc, nhưng cả hai đều có thể được nhìn dưới góc độ alternation.
+PCA và k-means là hai thuật toán học máy rất quen thuộc, nhưng cả hai đều có thể được nhìn dưới góc độ tối ưu luân phiên.
 \medskip
 
-Với PCA dưới dạng matrix factorization,
+Với PCA dưới dạng phân rã ma trận,
 \begin{equation}
     X\approx CY,
     \label{eq_ml_pca_factor}
 \end{equation}
-có thể cố định $C$ để tìm $Y$, rồi cố định $Y$ để tìm $C$. Nếu dùng chuẩn Frobenius, cả hai bước đều là least-squares. Cách nhìn này hữu ích khi mô hình cần thêm ràng buộc hoặc thay đổi hàm mất mát, ví dụ nonnegative matrix factorization hoặc robust PCA.
+có thể cố định $C$ để tìm $Y$, rồi cố định $Y$ để tìm $C$. Nếu dùng chuẩn Frobenius, cả hai bước đều là bình phương tối thiểu. Cách nhìn này hữu ích khi mô hình cần thêm ràng buộc hoặc thay đổi hàm mất mát, ví dụ phân rã ma trận không âm hoặc robust PCA.
 \medskip
 
-Với k-means, biến cần tối ưu gồm tâm cụm $y_1,\dots,y_K$ và nhãn cụm $c_1,\dots,c_m$. Nếu biết tâm cụm, nhãn tối ưu của mỗi điểm là tâm gần nhất. Nếu biết nhãn, tâm tối ưu là trung bình cộng của các điểm trong cụm. Hai bước này chính là alternation:
+Với k-means, biến cần tối ưu gồm tâm cụm $y_1,\dots,y_K$ và nhãn cụm $c_1,\dots,c_m$. Nếu biết tâm cụm, nhãn tối ưu của mỗi điểm là tâm gần nhất. Nếu biết nhãn, tâm tối ưu là trung bình cộng của các điểm trong cụm. Hai bước này chính là tối ưu luân phiên:
 \begin{equation}
     c_i\leftarrow \arg\min_j\|x_i-y_j\|_2^2,
     \qquad
     y_j\leftarrow \frac{1}{|\{i:c_i=j\}|}\sum_{i:c_i=j}x_i.
     \label{eq_ml_kmeans_two_steps}
 \end{equation}
-Điều này giải thích vì sao k-means đơn giản nhưng nhạy với khởi tạo. Mỗi bước làm giảm objective, nhưng objective không lồi nên thuật toán có thể dừng ở nghiệm cục bộ.
+Điều này giải thích vì sao k-means đơn giản nhưng nhạy với khởi tạo. Mỗi bước làm giảm hàm mục tiêu, nhưng hàm mục tiêu không lồi nên thuật toán có thể dừng ở nghiệm cục bộ.
 
 \subsection{ADMM trong tối ưu quy mô lớn và phân tán}
 \label{SUB_SEC_ml_admm}
@@ -104,13 +104,13 @@ ADMM đặc biệt hữu ích trong các bài toán học máy quy mô lớn vì
         &\min_{x,z}
         \quad
         \frac{1}{2}\|Ax-b\|_2^2+\alpha\|z\|_1\\
-        &\text{subject to}
+        &\text{với điều kiện}
         \quad
         x=z.
     \end{aligned}
     \label{eq_lasso_admm_split}
 \end{equation}
-Khi đó, bước cập nhật $x$ là một bài toán least-squares có điều chuẩn:
+Khi đó, bước cập nhật $x$ là một bài toán bình phương tối thiểu có điều chuẩn:
 \begin{equation}
     x_{k+1}
     =
@@ -118,7 +118,7 @@ Khi đó, bước cập nhật $x$ là một bài toán least-squares có điề
     \left(A^{T}b+\rho z_k-\lambda_k\right),
     \label{eq_lasso_admm_x}
 \end{equation}
-còn bước cập nhật $z$ là soft-thresholding:
+còn bước cập nhật $z$ là phép soft-thresholding:
 \begin{equation}
     z_{k+1}
     =
@@ -142,7 +142,7 @@ trong đó
 \end{equation}
 \medskip
 
-Cách tách này rất có ý nghĩa: phần dữ liệu $A,b$ nằm trong bước least-squares, còn phần thúc đẩy sparsity nằm trong bước soft-thresholding. Với dữ liệu lớn, các bước này có thể được tối ưu hóa riêng, tính toán song song hoặc phân tán trên nhiều máy \cite{Boyd2011ADMM}.
+Cách tách này rất có ý nghĩa: phần dữ liệu $A,b$ nằm trong bước bình phương tối thiểu, còn phần thúc đẩy tính thưa nằm trong bước soft-thresholding. Với dữ liệu lớn, các bước này có thể được tối ưu hóa riêng, tính toán song song hoặc phân tán trên nhiều máy \cite{Boyd2011ADMM}.
 \medskip
 
 Elastic Net cũng có thể được xử lý tương tự vì nó kết hợp phạt $L^1$ và $L^2$. Phần $L^2$ làm hệ tuyến tính ổn định hơn, còn phần $L^1$ vẫn được xử lý bằng soft-thresholding. Nhìn chung, ADMM phù hợp khi bài toán gồm nhiều thành phần: một phần trơn, một phần không trơn, và một ràng buộc tuyến tính giúp tách hai phần đó.
@@ -151,11 +151,11 @@ Elastic Net cũng có thể được xử lý tương tự vì nó kết hợp p
 \label{SUB_SEC_ml_nhan_xet_chung}
 Các phương pháp trong báo cáo không nằm ngoài học máy; ngược lại, chúng xuất hiện ngay trong các thuật toán cơ bản:
 \begin{itemize}
-    \item curve fitting và hồi quy phi tuyến sử dụng cấu trúc NLS;
-    \item robust regression và logistic regression có thể dẫn tới IRLS;
-    \item PCA, matrix factorization và k-means là các ví dụ tự nhiên của alternation;
-    \item Lasso, Elastic Net và tối ưu phân tán thường dùng coordinate descent hoặc ADMM.
+    \item khớp đường cong và hồi quy phi tuyến sử dụng cấu trúc NLS;
+    \item hồi quy bền vững và hồi quy logistic có thể dẫn tới IRLS;
+    \item PCA, phân rã ma trận và k-means là các ví dụ tự nhiên của tối ưu luân phiên;
+    \item Lasso, Elastic Net và tối ưu phân tán thường dùng hạ theo tọa độ hoặc ADMM.
 \end{itemize}
 \medskip
 
-Các ví dụ trên cho thấy việc chọn thuật toán không nên tách rời cấu trúc của hàm mục tiêu. Khi nhận ra phần nào là least-squares, phần nào là chuẩn $L^1$, phần nào có thể tách biến, ta có cơ sở để chọn một bộ giải gọn hơn thay vì dùng một phương pháp tổng quát cho mọi trường hợp.
+Các ví dụ trên cho thấy việc chọn thuật toán không nên tách rời cấu trúc của hàm mục tiêu. Khi nhận ra phần nào là bình phương tối thiểu, phần nào là chuẩn $L^1$, phần nào có thể tách biến, ta có cơ sở để chọn một bộ giải gọn hơn thay vì dùng một phương pháp tổng quát cho mọi trường hợp.
