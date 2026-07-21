@@ -1,3 +1,4 @@
+% !TeX root = main.tex
 \section{Bình phương tối thiểu có trọng số lặp}
 \label{SEC_irls}
 
@@ -177,11 +178,11 @@ Suy ra
          {\sum_{i=1}^{m}w_i^{(k)}}.
     \label{eq_weiszfeld_update}
 \end{equation}
-Công thức này là dạng cơ bản của thuật toán Weiszfeld \cite{Weiszfeld1937}. Mỗi vòng lặp vì thế chỉ cần tính một trung bình có trọng số; các điểm gần nghiệm hiện tại hơn nhận trọng số lớn hơn.
+Công thức này là dạng cơ bản của thuật toán Weiszfeld \cite{Weiszfeld1937}. Mỗi vòng lặp chỉ cần tính một trung bình có trọng số; các điểm gần nghiệm hiện tại hơn nhận trọng số lớn hơn.
 
 \subsection{Nhận xét về hội tụ và giới hạn của IRLS}
 \label{SUB_SEC_irls_nhan_xet}
-IRLS có ưu điểm là dễ xây dựng. Khi hàm mục tiêu có thể viết thành ``trọng số nhân với bình phương'', một chiến lược trực tiếp là cố định trọng số rồi giải bình phương tối thiểu có trọng số. Với sai số dư tuyến tính, mỗi bước lặp có thể giải bằng các kỹ thuật tuyến tính quen thuộc như Cholesky, QR hoặc gradient liên hợp.
+IRLS có ưu điểm là dễ xây dựng và triển khai. Khi hàm mục tiêu có thể được biểu diễn dưới dạng "trọng số nhân với bình phương", một cách tiếp cận trực tiếp là giữ cố định các trọng số, sau đó giải bài toán bình phương tối thiểu có trọng số. Với sai số dư tuyến tính, mỗi bước lặp có thể giải bằng các kỹ thuật tuyến tính quen thuộc như Cholesky, QR hoặc gradient liên hợp.
 \medskip
 
 Tuy nhiên, IRLS không phải lúc nào cũng hội tụ tốt. Có ba vấn đề thường gặp:
